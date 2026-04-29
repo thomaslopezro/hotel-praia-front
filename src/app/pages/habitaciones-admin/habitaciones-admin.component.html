@@ -1,18 +1,6 @@
 <div class="bg-slate-950 text-slate-100 min-h-screen">
   <!-- NAVBAR ADMIN -->
-  <nav class="border-b border-slate-800 bg-slate-950/95 backdrop-blur sticky top-0 z-50">
-    <div class="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between gap-4 flex-wrap">
-      <div class="flex items-center gap-3">
-        <img src="assets/images/logoPraia.png" alt="Hotel Praia" class="w-11 h-11 rounded-xl bg-white p-1 object-contain" />
-        <span class="text-lg font-semibold tracking-tight text-white">Hotel Praia · Admin</span>
-      </div>
-      <div class="flex items-center gap-2 flex-wrap text-sm">
-        <a routerLink="/habitaciones/admin" class="rounded-lg bg-slate-800 px-3 py-2 text-white transition">Habitaciones</a>
-        <a routerLink="/tipos-habitacion/admin" class="rounded-lg px-3 py-2 text-slate-200 hover:bg-slate-800 transition">Tipos de Habitación</a>
-        <a routerLink="/servicios/admin" class="rounded-lg px-3 py-2 text-slate-200 hover:bg-slate-800 transition">Servicios</a>
-      </div>
-    </div>
-  </nav>
+  <app-admin-navbar></app-admin-navbar>
 
   <header class="border-b border-slate-800 bg-slate-950/70">
     <div class="mx-auto max-w-6xl px-4 py-5 flex items-center justify-between">
