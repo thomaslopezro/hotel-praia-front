@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Habitacion, TipoHabitacion } from '../../modelo/habitacion';
 import { HabitacionService } from '../../services/habitacion.service';
 import { TipoHabitacionService } from '../../services/tipo-habitacion.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-habitaciones-admin',
@@ -21,11 +22,16 @@ export class HabitacionesAdminComponent implements OnInit {
   constructor(
     private habitacionService: HabitacionService,
     private tipoService: TipoHabitacionService,
-    private router: Router
+    private router: Router,
+    public authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.cargarTipos();
+  }
+
+  esOperador(): boolean {
+    return this.authService.esOperador();
   }
 
   onTipoChange(event: any): void {

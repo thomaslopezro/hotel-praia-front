@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Servicio } from '../../modelo/servicio';
 import { ServiciosService } from '../../services/servicios.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-servicios-admin',
@@ -14,11 +15,16 @@ export class ServiciosAdminComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private serviciosService: ServiciosService
+    private serviciosService: ServiciosService,
+    public authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.loadServicios();
+  }
+
+  esOperador(): boolean {
+    return this.authService.esOperador();
   }
 
   loadServicios(): void {

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Operador } from '../../modelo/operador';
 import { OperadorService } from '../../services/operador.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-operadores-admin',
@@ -18,11 +19,16 @@ export class OperadoresAdminComponent implements OnInit {
 
   constructor(
     private operadorService: OperadorService,
-    private router: Router
+    private router: Router,
+    public authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.cargarOperadores();
+  }
+
+  esOperador(): boolean {
+    return this.authService.esOperador();
   }
 
   cargarOperadores(): void {
