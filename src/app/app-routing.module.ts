@@ -17,6 +17,8 @@ import { ReservasFormComponent } from './pages/reservas-form/reservas-form.compo
 import { MenuAdminComponent } from './pages/menu-admin/menu-admin.component';
 import { AuthService } from './services/auth.service';
 import { ServiciosCuentaComponent } from './pages/servicios-cuenta/servicios-cuenta.component';
+import { OperadoresAdminComponent } from './pages/operadores-admin/operadores-admin.component';
+import { OperadoresFormComponent } from './pages/operadores-form/operadores-form.component';
 
 
 
@@ -47,6 +49,10 @@ const routes: Routes = [
   { path: 'reservas/admin', component: ReservasAdminComponent },
   { path: 'reservas/admin/nuevo', component: ReservasFormComponent },
   { path: 'reservas/admin/editar/:id', component: ReservasFormComponent },
+
+  { path: 'operadores/admin', component: OperadoresAdminComponent },
+  { path: 'operadores/admin/nuevo', component: OperadoresFormComponent },
+  { path: 'operadores/admin/editar/:id', component: OperadoresFormComponent },
 
   { path: 'menu-admin', component: MenuAdminComponent },
 

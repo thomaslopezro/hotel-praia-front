@@ -11,5 +11,6 @@ export class AdminNavbarComponent {
     { label: 'Tipos de Habitación', route: '/tipos-habitacion' },
     { label: 'Servicios',           route: '/servicios/admin' },
     { label: 'Reservas',            route: '/reservas/admin' },
+    { label: 'Operadores',          route: '/operadores/admin' }
   ];
 }

@@ -23,6 +23,8 @@ import { ReservasAdminComponent } from './pages/reservas-admin/reservas-admin.co
 import { MenuAdminComponent } from './pages/menu-admin/menu-admin.component';
 import { ServiciosCuentaComponent } from './pages/servicios-cuenta/servicios-cuenta.component';
 import { AdminNavbarComponent } from './pages/admin-navbar/admin-navbar.component';
+import { OperadoresAdminComponent } from './pages/operadores-admin/operadores-admin.component';
+import { OperadoresFormComponent } from './pages/operadores-form/operadores-form.component';
 
 
 @NgModule({
@@ -44,6 +46,8 @@ import { AdminNavbarComponent } from './pages/admin-navbar/admin-navbar.componen
     MenuAdminComponent,
     ServiciosCuentaComponent,
     AdminNavbarComponent,
+    OperadoresAdminComponent,
+    OperadoresFormComponent
  
 
   ],
@@ -55,6 +59,7 @@ import { AdminNavbarComponent } from './pages/admin-navbar/admin-navbar.componen
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    
   ],
   providers: [],
   bootstrap: [AppComponent]
