@@ -26,7 +26,7 @@ export class OperadoresFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      correo: ['', [Validators.required, Validators.email]],
+      correo:     ['', [Validators.required, Validators.email]],
       contrasena: ['', Validators.required]
     });
 
@@ -40,7 +40,9 @@ export class OperadoresFormComponent implements OnInit {
         next: (operador) => {
           this.form.patchValue({
             correo: operador.correo
+            // No se precarga la contraseña por seguridad
           });
+          // En edición la contraseña no es obligatoria
           this.form.get('contrasena')?.clearValidators();
           this.form.get('contrasena')?.updateValueAndValidity();
         },
@@ -57,9 +59,10 @@ export class OperadoresFormComponent implements OnInit {
     }
 
     const value = this.form.value;
+
     const operador: Operador = {
-      id: this.editing ? this.operadorId : undefined,
-      correo: value.correo,
+      id:         this.editing ? this.operadorId : undefined,
+      correo:     value.correo,
       contrasena: value.contrasena || undefined
     };
 
@@ -71,31 +74,28 @@ export class OperadoresFormComponent implements OnInit {
       this.operadorService.update(this.operadorId, operador).subscribe({
         next: () => {
           this.successMessage = 'Operador actualizado correctamente';
-          setTimeout(() => this.router.navigate(['/operador/admin']), 1500);
+          setTimeout(() => this.router.navigate(['/operadores/admin']), 1500);
         },
         error: (err) => {
           this.errorMessage = `Error: ${err.error?.message || err.message || 'Error al actualizar'}`;
           this.guardando = false;
-        },
-        complete: () => (this.guardando = false)
+        }
       });
     } else {
       this.operadorService.create(operador).subscribe({
         next: () => {
           this.successMessage = 'Operador creado correctamente';
-          this.form.reset();
-          setTimeout(() => this.router.navigate(['/operador/admin']), 1500);
+          setTimeout(() => this.router.navigate(['/operadores/admin']), 1500);
         },
         error: (err) => {
           this.errorMessage = `Error: ${err.error?.message || err.message || 'Error al crear'}`;
           this.guardando = false;
-        },
-        complete: () => (this.guardando = false)
+        }
       });
     }
   }
 
   cancel(): void {
-    this.router.navigate(['/operador/admin']);
+    this.router.navigate(['/operadores/admin']);
   }
 }

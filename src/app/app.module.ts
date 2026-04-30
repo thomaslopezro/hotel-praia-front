@@ -23,6 +23,7 @@ import { ReservasAdminComponent } from './pages/reservas-admin/reservas-admin.co
 import { MenuAdminComponent } from './pages/menu-admin/menu-admin.component';
 import { ServiciosCuentaComponent } from './pages/servicios-cuenta/servicios-cuenta.component';
 import { AdminNavbarComponent } from './pages/admin-navbar/admin-navbar.component';
+import { OperatorNavbarComponent } from './pages/operator-navbar/operator-navbar.component';
 import { OperadoresAdminComponent } from './pages/operadores-admin/operadores-admin.component';
 import { OperadoresFormComponent } from './pages/operadores-form/operadores-form.component';
 
@@ -46,6 +47,7 @@ import { OperadoresFormComponent } from './pages/operadores-form/operadores-form
     MenuAdminComponent,
     ServiciosCuentaComponent,
     AdminNavbarComponent,
+    OperatorNavbarComponent,
     OperadoresAdminComponent,
     OperadoresFormComponent
  
