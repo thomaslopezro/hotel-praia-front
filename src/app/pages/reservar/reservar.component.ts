@@ -58,9 +58,12 @@ export class ReservarComponent implements OnInit {
     };
 
     this.reservaService.crearReservaPorTipo(data).subscribe({
-      next: () => {
-        alert('Reserva creada correctamente');
-      },
+      next: (resp) => {
+  alert(
+    'Reserva creada correctamente. Habitación asignada: ' +
+    resp.habitacionCodigo
+  );
+},
       error: (err) => {
         alert(err.error?.err || 'Error al reservar');
       }
