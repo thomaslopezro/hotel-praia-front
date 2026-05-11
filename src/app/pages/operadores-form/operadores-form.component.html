@@ -1,0 +1,88 @@
+<header class="border-b border-slate-800 bg-slate-950/70 backdrop-blur text-slate-100">
+  <div class="mx-auto max-w-3xl px-4 py-5 flex items-center justify-between">
+    <div>
+      <h1 class="text-xl font-semibold">
+        {{ editing ? 'Editar operador' : 'Crear operador' }}
+      </h1>
+      <p class="text-sm text-slate-400">Completa los campos y guarda.</p>
+    </div>
+
+    <button
+      type="button"
+      (click)="cancel()"
+      class="rounded-lg border border-slate-800 px-4 py-2 text-sm hover:bg-slate-900">
+      Volver
+    </button>
+  </div>
+</header>
+
+<main class="mx-auto max-w-3xl px-4 py-8 text-slate-100">
+  <div class="rounded-2xl border border-slate-800 bg-slate-900/40 p-6">
+
+    <!-- Mensaje error -->
+    <div *ngIf="errorMessage"
+      class="mb-4 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Mensaje éxito -->
+    <div *ngIf="successMessage"
+      class="mb-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
+      {{ successMessage }}
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="save()" class="space-y-4">
+
+      <div *ngIf="editing" class="text-xs text-slate-400">
+        ID: <span class="font-mono">{{ operadorId }}</span>
+      </div>
+
+      <div>
+        <label class="block text-sm text-slate-300 mb-1">Correo electrónico</label>
+        <input
+          type="email"
+          formControlName="correo"
+          class="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-2 text-sm outline-none focus:border-sky-500"
+          placeholder="operador@hotel.com">
+        <p *ngIf="form.get('correo')?.invalid && form.get('correo')?.touched"
+          class="mt-1 text-xs text-rose-400">
+          Ingresa un correo válido.
+        </p>
+      </div>
+
+      <div>
+        <label class="block text-sm text-slate-300 mb-1">
+          Contraseña
+          <span *ngIf="editing" class="text-slate-500 font-normal">(dejar vacío para no cambiar)</span>
+        </label>
+        <input
+          type="password"
+          formControlName="contrasena"
+          class="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-2 text-sm outline-none focus:border-sky-500"
+          placeholder="••••••••">
+        <p *ngIf="form.get('contrasena')?.invalid && form.get('contrasena')?.touched"
+          class="mt-1 text-xs text-rose-400">
+          La contraseña es requerida.
+        </p>
+      </div>
+
+      <div class="pt-2 flex gap-2">
+        <button
+          type="submit"
+          [disabled]="guardando"
+          class="rounded-xl bg-sky-600 px-5 py-2 text-sm font-medium hover:bg-sky-500 disabled:opacity-50 disabled:cursor-not-allowed">
+          {{ guardando ? 'Guardando...' : 'Guardar' }}
+        </button>
+
+        <button
+          type="button"
+          (click)="cancel()"
+          [disabled]="guardando"
+          class="rounded-xl border border-slate-800 px-5 py-2 text-sm hover:bg-slate-900 disabled:opacity-50 disabled:cursor-not-allowed">
+          Cancelar
+        </button>
+      </div>
+
+    </form>
+  </div>
+</main>

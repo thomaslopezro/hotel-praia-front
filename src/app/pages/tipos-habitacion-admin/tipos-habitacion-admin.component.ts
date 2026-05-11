@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TipoHabitacion } from '../../modelo/tipo-habitacion';
 import { TipoHabitacionService } from '../../services/tipo-habitacion.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-tipos-habitacion-admin',
@@ -13,11 +14,16 @@ export class TiposHabitacionAdminComponent implements OnInit {
 
   constructor(
     private tipoHabitacionService: TipoHabitacionService,
-    private router: Router
+    private router: Router,
+    public authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.loadRooms();
+  }
+
+  esOperador(): boolean {
+    return this.authService.esOperador();
   }
 
   loadRooms(): void {

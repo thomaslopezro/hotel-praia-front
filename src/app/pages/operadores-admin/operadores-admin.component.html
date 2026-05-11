@@ -1,0 +1,115 @@
+<div class="bg-slate-950 text-slate-100 min-h-screen">
+
+  <ng-container *ngIf="!esOperador()">
+    <app-admin-navbar></app-admin-navbar>
+  </ng-container>
+  <ng-container *ngIf="esOperador()">
+    <app-operator-navbar></app-operator-navbar>
+  </ng-container>
+
+  <header class="border-b border-slate-800 bg-slate-950/70">
+    <div class="mx-auto max-w-6xl px-4 py-5 flex items-center justify-between">
+      <div>
+        <h1 class="text-xl font-semibold tracking-tight">Operadores (Admin)</h1>
+        <p class="text-sm text-slate-400">Gestión de todos los operadores del sistema</p>
+      </div>
+      <button (click)="goToCreate()"
+        class="rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium hover:bg-sky-500">
+        + Crear operador
+      </button>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-6xl px-4 py-8">
+
+    <!-- Mensaje éxito -->
+    <div *ngIf="okMessage"
+      class="mb-6 rounded-xl border border-emerald-500/40 bg-gradient-to-r from-emerald-500/10 to-emerald-600/5 px-5 py-4 flex items-start gap-3 shadow-lg shadow-emerald-500/10">
+      <svg class="h-5 w-5 text-emerald-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+      </svg>
+      <div>
+        <div class="font-semibold text-emerald-300 text-sm">Éxito</div>
+        <div class="text-emerald-200 text-sm mt-0.5">{{ okMessage }}</div>
+      </div>
+    </div>
+
+    <!-- Mensaje error -->
+    <div *ngIf="errMessage"
+      class="mb-6 rounded-xl border border-red-500/40 bg-gradient-to-r from-red-500/10 to-rose-600/5 px-5 py-4 flex items-start gap-4 shadow-lg shadow-red-500/10">
+      <svg class="h-6 w-6 text-red-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+      </svg>
+      <div>
+        <div class="font-semibold text-red-300 text-sm">Error</div>
+        <div class="text-red-200 text-sm mt-1 leading-relaxed">{{ errMessage }}</div>
+      </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <section class="grid gap-4 sm:grid-cols-2">
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/40 p-5">
+        <div class="text-sm text-slate-400">Total operadores</div>
+        <div class="mt-1 text-2xl font-semibold">{{ operadores.length }}</div>
+      </div>
+      <div class="rounded-2xl border border-slate-800 bg-slate-900/40 p-5">
+        <div class="text-sm text-slate-400">Operadores registrados</div>
+        <div class="mt-1 text-2xl font-semibold text-sky-400">{{ operadores.length }}</div>
+      </div>
+    </section>
+
+    <!-- Cargando -->
+    <div *ngIf="cargando" class="text-center py-12">
+      <p class="text-slate-400 mt-2">Cargando operadores...</p>
+    </div>
+
+    <!-- Error de carga -->
+    <div *ngIf="error" class="text-center py-12 text-rose-400">{{ error }}</div>
+
+    <!-- Tabla -->
+    <section *ngIf="!cargando && !error" class="mt-6 rounded-2xl border border-slate-800 bg-slate-900/40 overflow-hidden">
+      <div class="px-5 py-4 flex items-center justify-between border-b border-slate-800">
+        <h2 class="text-lg font-semibold">Listado</h2>
+        <div class="text-sm text-slate-400">Total: {{ operadores.length }}</div>
+      </div>
+
+      <div class="overflow-auto">
+        <table class="min-w-full text-sm">
+          <thead class="bg-slate-950/60 text-slate-300">
+            <tr>
+              <th class="text-left px-5 py-3">ID</th>
+              <th class="text-left px-5 py-3">Correo</th>
+              <th class="text-right px-5 py-3">Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800">
+            <tr *ngFor="let o of operadores" class="hover:bg-slate-800/30 transition">
+              <td class="px-5 py-3 font-mono text-xs text-slate-400">#{{ o.id }}</td>
+              <td class="px-5 py-3">
+                <div class="font-medium">{{ o.correo }}</div>
+              </td>
+              <td class="px-5 py-3">
+                <div class="flex justify-end gap-2">
+                  <button (click)="goToEdit(o.id)"
+                    class="rounded-lg border border-slate-800 px-3 py-2 text-xs hover:bg-slate-900">
+                    Editar
+                  </button>
+                  <button (click)="eliminarOperador(o.id)"
+                    class="rounded-lg border border-slate-800 px-3 py-2 text-xs hover:bg-slate-900 hover:border-red-800 hover:text-red-400 transition">
+                    Eliminar
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="operadores.length === 0">
+              <td class="px-5 py-8 text-center text-slate-400" colspan="3">
+                No hay operadores registrados.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>

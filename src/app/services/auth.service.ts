@@ -8,7 +8,7 @@ export interface AuthResponse {
   nombre: string;
   apellido: string;
   correo: string;
-  rol: 'CLIENTE' | 'OPERADOR';
+  rol: 'CLIENTE' | 'OPERADOR' | 'ADMIN';
   tipo: string;
 }
 
@@ -111,6 +111,10 @@ export class AuthService {
 
   esOperador(): boolean {
     return this.getRol() === 'OPERADOR';
+  }
+
+  esAdmin(): boolean {
+    return this.getRol() === 'ADMIN';
   }
 
   esCliente(): boolean {

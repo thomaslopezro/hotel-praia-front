@@ -36,7 +36,10 @@ export class LoginComponent {
         console.log('Respuesta del login:', response); // 👈 DEBUG: ver qué llega
         
         // 👇 IMPORTANTE: Verificar el rol correctamente
-        if (response.rol === 'OPERADOR') {
+        if (response.rol === 'ADMIN') {
+          console.log('Es administrador, redirigiendo a /habitaciones/admin');
+          this.router.navigate(['/habitaciones/admin']);
+        } else if (response.rol === 'OPERADOR') {
           console.log('Es operador, redirigiendo a /menu-admin');
           this.router.navigate(['/menu-admin']);
         } else {

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Reserva } from '../../modelo/reserva';
 import { ReservaService } from '../../services/reserva.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-reservas-admin',
@@ -18,11 +19,16 @@ export class ReservasAdminComponent implements OnInit {
 
   constructor(
     private reservaService: ReservaService,
-    private router: Router
+    private router: Router,
+    public authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.cargarReservas();
+  }
+
+  esOperador(): boolean {
+    return this.authService.esOperador();
   }
 
   cargarReservas(): void {
