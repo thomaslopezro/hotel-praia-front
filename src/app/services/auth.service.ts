@@ -26,8 +26,6 @@ export class AuthService {
     );
   }
 
-  // ============ MÉTODOS DE AUTENTICACIÓN ============
-  
   registrar(huesped: Huesped): Observable<any> {
     return this.http.post(`${this.apiUrl}/auth/registro`, huesped);
   }
@@ -38,11 +36,15 @@ export class AuthService {
         localStorage.setItem('currentUser', JSON.stringify(response));
         localStorage.setItem('rol', response.rol);
         
-        // ✅ MANTENER compatibilidad con código existente
+        // Mantener compatibilidad con código existente
         if (response.rol === 'CLIENTE') {
           localStorage.setItem('huespedId', response.id.toString());
           localStorage.setItem('nombre', response.nombre);
           localStorage.setItem('correo', response.correo);
+        } else if (response.rol === 'OPERADOR') {
+          // Para operador, guardar el correo como identificador
+          localStorage.setItem('operadorId', response.id.toString());
+          localStorage.setItem('operadorCorreo', response.correo);
         }
         
         this.currentUserSubject.next(response);
@@ -53,67 +55,48 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('rol');
-    // ✅ Limpiar también los datos de cliente
     localStorage.removeItem('huespedId');
     localStorage.removeItem('nombre');
     localStorage.removeItem('correo');
+    localStorage.removeItem('operadorId');
+    localStorage.removeItem('operadorCorreo');
     this.currentUserSubject.next(null);
   }
 
-  // ============ MÉTODOS PARA COMPATIBILIDAD (AGREGAR) ============
-  
-  /**
-   * ✅ Método que usa MiPerfilComponent y ReservarComponent
-   * Devuelve el ID del huésped si es cliente, null si no
-   */
+  //  Método que usa MiPerfilComponent y ReservarComponent
   getUsuarioId(): number | null {
-    // Primero intentar con el nuevo formato
     const currentUser = this.getCurrentUser();
     if (currentUser && currentUser.rol === 'CLIENTE') {
       return currentUser.id;
     }
-    // Fallback al viejo formato (por si acaso)
     const id = localStorage.getItem('huespedId');
     return id ? Number(id) : null;
   }
 
-  /**
-   * ✅ Método que usa MiPerfilComponent
-   * Obtiene un huésped por su ID desde el backend
-   */
+  //  Método que usa MiPerfilComponent
   obtenerPorId(id: number): Observable<Huesped> {
     return this.http.get<any>(`${this.apiUrl}/huespedes/${id}`).pipe(
       map(resp => this.mapearUsuario(resp))
     );
   }
 
-  /**
-   * ✅ Método que usa MiPerfilComponent
-   * Actualiza los datos de un huésped
-   */
+  //  Método que usa MiPerfilComponent
   actualizar(id: number, huesped: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/huespedes/${id}`, huesped);
   }
 
-  /**
-   * ✅ Método que usa MiPerfilComponent
-   * Elimina la cuenta de un huésped
-   */
+  //  Método que usa MiPerfilComponent
   eliminar(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/huespedes/${id}`);
   }
 
-  /**
-   * ✅ Método que usa MiPerfilComponent (listar todos - admin)
-   */
+  //  Método que usa MiPerfilComponent
   listar(): Observable<Huesped[]> {
     return this.http.get<any[]>(`${this.apiUrl}/huespedes/admin`).pipe(
       map(lista => lista.map(item => this.mapearUsuario(item)))
     );
   }
 
-  // ============ MÉTODOS DE UTILIDAD ============
-  
   getCurrentUser(): AuthResponse | null {
     return this.currentUserSubject.value;
   }
@@ -123,7 +106,7 @@ export class AuthService {
   }
 
   estaLogueado(): boolean {
-    return !!this.getCurrentUser() || !!localStorage.getItem('huespedId');
+    return !!this.getCurrentUser();
   }
 
   esOperador(): boolean {
@@ -134,8 +117,6 @@ export class AuthService {
     return this.getRol() === 'CLIENTE';
   }
 
-  // ============ MÉTODO PRIVADO ============
-  
   private mapearUsuario(data: any): Huesped {
     return new Huesped(
       data.id ?? data.huespedId,
