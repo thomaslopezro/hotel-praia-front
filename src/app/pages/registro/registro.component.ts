@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
-import { Huesped } from 'src/app/modelo/huesped';
 
 @Component({
   selector: 'app-registro',
@@ -10,7 +9,9 @@ import { Huesped } from 'src/app/modelo/huesped';
   styleUrls: ['./registro.component.scss']
 })
 export class RegistroComponent {
+
   registroForm: FormGroup;
+
   mensaje = '';
   error = '';
 
@@ -19,46 +20,102 @@ export class RegistroComponent {
     private authService: AuthService,
     private router: Router
   ) {
+
     this.registroForm = this.fb.group({
+
       nombre: ['', Validators.required],
+
       apellido: ['', Validators.required],
-      correo: ['', [Validators.required, Validators.email]],
+
+      correo: [
+        '',
+        [
+          Validators.required,
+          Validators.email
+        ]
+      ],
+
       contrasena: ['', Validators.required],
+
       cedula: ['', Validators.required],
+
       telefono: [''],
+
       direccion: [''],
+
       nacionalidad: ['']
     });
   }
 
   registrarse(): void {
+
+    // =========================
+    // VALIDAR FORMULARIO
+    // =========================
     if (this.registroForm.invalid) {
+
       this.registroForm.markAllAsTouched();
       return;
     }
 
     const formValue = this.registroForm.value;
 
-    const huesped = new Huesped(
-      undefined,
-      formValue.nombre,
-      formValue.apellido,
-      formValue.correo,
-      formValue.contrasena,
-      formValue.cedula,
-      formValue.telefono,
-      formValue.direccion,
-      formValue.nacionalidad,
-      []
-    );
+    // =========================
+    // OBJETO CORRECTO
+    // PARA EL BACKEND NUEVO
+    // =========================
+    const huesped = {
 
-    this.authService.registrar(huesped).subscribe({
+      nombre: formValue.nombre,
+
+      apellido: formValue.apellido,
+
+      cedula: formValue.cedula,
+
+      telefono: formValue.telefono,
+
+      direccion: formValue.direccion,
+
+      nacionalidad: formValue.nacionalidad,
+
+      user: {
+
+        username: formValue.correo,
+
+        password: formValue.contrasena
+      }
+    };
+
+    console.log('Enviando huésped:', huesped);
+
+    // =========================
+    // REGISTRAR
+    // =========================
+    this.authService.registrar(huesped as any).subscribe({
+
       next: () => {
+
+        this.error = '';
+
         this.mensaje = 'Usuario registrado correctamente';
-        setTimeout(() => this.router.navigate(['/login']), 1000);
+
+        console.log('Registro exitoso');
+
+        setTimeout(() => {
+
+          this.router.navigate(['/login']);
+
+        }, 1000);
       },
+
       error: (err) => {
-        this.error = err?.error?.message || 'No fue posible registrar el usuario';
+
+        console.error('Error completo:', err);
+
+        this.error =
+          err?.error?.err ||
+          err?.error?.message ||
+          'No fue posible registrar el usuario';
       }
     });
   }

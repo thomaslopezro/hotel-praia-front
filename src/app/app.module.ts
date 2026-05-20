@@ -26,7 +26,8 @@ import { AdminNavbarComponent } from './pages/admin-navbar/admin-navbar.componen
 import { OperatorNavbarComponent } from './pages/operator-navbar/operator-navbar.component';
 import { OperadoresAdminComponent } from './pages/operadores-admin/operadores-admin.component';
 import { OperadoresFormComponent } from './pages/operadores-form/operadores-form.component';
-
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './interceptor/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,11 @@ import { OperadoresFormComponent } from './pages/operadores-form/operadores-form
     ReactiveFormsModule,
     
   ],
-  providers: [],
+  providers: [{
+  provide: HTTP_INTERCEPTORS,
+  useClass: AuthInterceptor,
+  multi: true
+}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
