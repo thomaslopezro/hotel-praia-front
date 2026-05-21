@@ -118,10 +118,16 @@ export class AuthService {
 
   private handleError(error: HttpErrorResponse) {
     let msg = 'Error en el sistema';
-    if (error.status === 401) msg = 'Sesión no válida o credenciales incorrectas';
-    if (error.status === 403) msg = 'Acceso denegado';
+    if (error.error && error.error.err) {
+      // Ahora capturamos el mensaje real del backend para cualquier estado (400, 401, etc)
+      msg = error.error.err;
+    } else if (error.status === 401) {
+      msg = 'Sesión no válida o credenciales incorrectas';
+    } else if (error.status === 403) {
+      msg = 'Acceso denegado';
+    }
     
-    console.error(`Error HTTP ${error.status}: ${error.message}`);
+    console.error(`Error HTTP ${error.status}:`, error);
     return throwError(() => new Error(msg));
   }
 }
