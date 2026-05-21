@@ -8,6 +8,7 @@ export interface UserResponseDTO {
     nombre: string;
     apellido: string;
     email: string;
+    correo: string; // Alias para compatibilidad con componentes existentes
     rol: string;
     token: string;
 }
