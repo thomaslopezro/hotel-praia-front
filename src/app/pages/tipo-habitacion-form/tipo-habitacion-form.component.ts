@@ -90,7 +90,7 @@ export class TipoHabitacionFormComponent implements OnInit {
         next: (response) => {
           console.log('Actualizado exitosamente:', response);
           this.successMessage = 'Tipo de habitación actualizado correctamente';
-          setTimeout(() => this.router.navigate(['/tipos-habitacion/admin']), 1500);
+          setTimeout(() => this.router.navigate(['/tipos-habitacion']), 1500);
         },
         error: (err) => {
           console.error('Error actualizando:', err);
@@ -103,7 +103,7 @@ export class TipoHabitacionFormComponent implements OnInit {
         next: (response) => {
           console.log('Creado exitosamente:', response);
           this.successMessage = 'Tipo de habitación creado correctamente';
-          setTimeout(() => this.router.navigate(['/tipos-habitacion/admin']), 1500);
+          setTimeout(() => this.router.navigate(['/tipos-habitacion']), 1500);
         },
         error: (err) => {
           console.error('Error creando:', err);

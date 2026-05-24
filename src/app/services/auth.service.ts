@@ -52,33 +52,29 @@ export class AuthService {
   }
 
   // Obtener un usuario específico por ID (requerido por mi-perfil.component)
+  // Apunta a /api/huespedes/{id} porque ahi vive el endpoint en el back.
   obtenerPorId(id: number | null): Observable<UserResponseDTO> {
-    return this.http.get<UserResponseDTO>(`${this.apiUrl}/usuario/${id}`).pipe(
+    return this.http.get<any>(`http://localhost:8080/api/huespedes/${id}`).pipe(
       tap(user => {
-        user.correo = user.email;
+        // El back devuelve Huesped con campo 'correo' (no 'email').
+        // Sincronizamos los dos para que cualquier componente que use 'email' funcione.
+        user.email = user.email || user.correo;
+        user.correo = user.correo || user.email;
       }),
       catchError(this.handleError)
     );
   }
 
   // Actualizar datos del usuario (requerido por mi-perfil.component)
-  actualizar(id: number | null, userData: any): Observable<UserResponseDTO> {
-    return this.http.put<UserResponseDTO>(`${this.apiUrl}/usuario/${id}`, userData).pipe(
-      tap(user => {
-        user.correo = user.email;
-        // Sincronizar el subject si el usuario editado es el que tiene la sesión iniciada
-        const current = this.userSubject.value;
-        if (current && current.id === user.id) {
-          this.userSubject.next(user);
-        }
-      }),
+  actualizar(id: number | null, userData: any): Observable<any> {
+    return this.http.put<any>(`http://localhost:8080/api/huespedes/${id}`, userData).pipe(
       catchError(this.handleError)
     );
   }
 
   // Eliminar usuario (requerido por mi-perfil.component)
   eliminar(id: number | null): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/usuario/${id}`).pipe(
+    return this.http.delete(`http://localhost:8080/api/huespedes/${id}`).pipe(
       catchError(this.handleError)
     );
   }
@@ -104,10 +100,20 @@ export class AuthService {
     return this.userSubject.value;
   }
 
-  // Verifica si el usuario tiene rol de administrador u operador
+  // Verifica si el usuario es OPERADOR (estrictamente, no admin).
+  // El rol se guarda SIN prefijo "ROLE_" tras el login.
   esOperador(): boolean {
-    const role = localStorage.getItem('user_role');
-    return role === 'ROLE_OPERADOR' || role === 'ROLE_ADMIN';
+    return localStorage.getItem('user_role') === 'OPERADOR';
+  }
+
+  // Verifica si el usuario es ADMIN
+  esAdmin(): boolean {
+    return localStorage.getItem('user_role') === 'ADMIN';
+  }
+
+  // Verifica si el usuario es CLIENTE
+  esCliente(): boolean {
+    return localStorage.getItem('user_role') === 'CLIENTE';
   }
 
   // Retorna el ID del usuario para el componente mi-perfil

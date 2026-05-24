@@ -24,11 +24,24 @@ export class OperadorService {
   }
 
   create(data: Operador): Observable<Operador> {
-    return this.http.post<Operador>(this.adminUrl, data);
+    // El back espera la entidad Operador con un UserEntity anidado:
+    // { user: { username: ..., password: ... } }
+    const payload = {
+      user: {
+        username: data.correo,
+        password: data.contrasena
+      }
+    };
+    return this.http.post<Operador>(this.adminUrl, payload);
   }
 
   update(id: number, data: Operador): Observable<Operador> {
-    return this.http.put<Operador>(`${this.adminUrl}/${id}`, data);
+    const user: any = { username: data.correo };
+    // Solo enviar password si el admin lo cambio (en edicion es opcional)
+    if (data.contrasena && data.contrasena.trim() !== '') {
+      user.password = data.contrasena;
+    }
+    return this.http.put<Operador>(`${this.adminUrl}/${id}`, { user });
   }
 
   delete(id: number): Observable<void> {
@@ -36,10 +49,10 @@ export class OperadorService {
   }
 
   private mapear(item: any): Operador {
+    // El back devuelve la entidad Operador con user.username (que es el correo)
     return {
-      id:        item.id,
-      correo:    item.correo,
-      contrasena: item.contrasena
+      id:     item.id,
+      correo: item.user?.username ?? item.correo ?? ''
     };
   }
 }

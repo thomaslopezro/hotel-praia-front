@@ -51,6 +51,14 @@ export class AuthGuard implements CanActivate {
     // =========================
     // VALIDAR ROL
     // =========================
+
+    // ADMIN puede entrar a CUALQUIER ruta protegida (es superusuario).
+    // Si no, las rutas admin con expectedRol:'OPERADOR' lo rechazan y
+    // lo redirigen aqui mismo => loop infinito.
+    if (currentUser?.rol === 'ADMIN') {
+      return true;
+    }
+
     if (currentUser?.rol !== expectedRol) {
 
       console.log(
@@ -66,11 +74,6 @@ export class AuthGuard implements CanActivate {
       } else if (currentUser?.rol === 'CLIENTE') {
 
         this.router.navigate(['/']);
-
-      // ADMIN
-      } else if (currentUser?.rol === 'ADMIN') {
-
-        this.router.navigate(['/habitaciones/admin']);
 
       } else {
 

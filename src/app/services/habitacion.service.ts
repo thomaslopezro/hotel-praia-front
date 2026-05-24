@@ -36,7 +36,9 @@ export class HabitacionService {
           piso: item.piso,
           estado: item.estado,
           notas: item.notas,
-          tipoHabitacion: tiposMap.get(item.tipoHabitacion?.id || item.tipoHabitacion)
+          // El back ahora devuelve HabitacionDetalleDTO con tipoHabitacionId plano.
+          // Tambien soportamos el formato anterior por compatibilidad.
+          tipoHabitacion: tiposMap.get(item.tipoHabitacionId ?? item.tipoHabitacion?.id ?? item.tipoHabitacion)
         }));
       })
     );
