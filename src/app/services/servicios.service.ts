@@ -11,89 +11,58 @@ export class ServiciosService {
 
   constructor(private http: HttpClient) {}
 
+  // Mapea la respuesta del back (campos en castellano) al modelo del front
+  // (campos en ingles). Las features ahora vienen como array normalizado del
+  // back; antes el front las leia de horario, lo que sobreescribia el horario.
+  private toFront(bs: any): Servicio {
+    return {
+      id: bs.id,
+      title: bs.nombre,
+      subtitle: bs.descripcion,
+      description: bs.descripcion,
+      image: bs.imagenUrl,
+      precio: bs.precio,
+      precioTipo: bs.precioTipo,
+      horario: bs.horario,
+      capacidad: bs.capacidad,
+      features: Array.isArray(bs.features) ? bs.features : []
+    };
+  }
+
+  private toBack(servicio: Servicio): any {
+    return {
+      nombre: servicio.title,
+      descripcion: servicio.subtitle,
+      precio: servicio.precio ?? 0,
+      imagenUrl: servicio.image,
+      capacidad: 1,
+      precioTipo: servicio.precioTipo ?? 'Por persona',
+      horario: servicio.horario ?? '',
+      features: servicio.features ?? []
+    };
+  }
+
   getAll(): Observable<Servicio[]> {
     return this.http.get<any[]>(this.apiUrl).pipe(
-      map(backendServicios => backendServicios.map(bs => ({
-        id: bs.id,
-        title: bs.nombre,
-        subtitle: bs.descripcion,
-        description: bs.descripcion,
-        image: bs.imagenUrl,
-        precio: bs.precio,
-        precioTipo: bs.precioTipo,
-        horario: bs.horario,
-        capacidad: bs.capacidad,
-        features: bs.horario ? [bs.horario] : [] // o convertir horario en array
-      })))
+      map(backendServicios => backendServicios.map(bs => this.toFront(bs)))
     );
   }
 
   getById(id: number): Observable<Servicio> {
     return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
-      map(bs => ({
-        id: bs.id,
-        title: bs.nombre,
-        subtitle: bs.descripcion,
-        description: bs.descripcion,
-        image: bs.imagenUrl,
-        precio: bs.precio,
-        precioTipo: bs.precioTipo,
-        horario: bs.horario,
-        capacidad: bs.capacidad,
-        features: bs.horario ? [bs.horario] : []
-      }))
+      map(bs => this.toFront(bs))
     );
   }
 
   create(servicio: Servicio): Observable<Servicio> {
-    const backendServicio = {
-      nombre: servicio.title,
-      descripcion: servicio.subtitle,
-      precio: servicio.precio ?? 0,
-      imagenUrl: servicio.image,
-      capacidad: 1,
-      precioTipo: 'Por persona',
-      horario: servicio.features.join(', ')
-    };
-    return this.http.post<any>(this.apiUrl, backendServicio).pipe(
-      map(bs => ({
-        id: bs.id,
-        title: bs.nombre,
-        subtitle: bs.descripcion,
-        description: bs.descripcion,
-        image: bs.imagenUrl,
-        precio: bs.precio,
-        precioTipo: bs.precioTipo,
-        horario: bs.horario,
-        capacidad: bs.capacidad,
-        features: bs.horario ? [bs.horario] : []
-      }))
+    return this.http.post<any>(this.apiUrl, this.toBack(servicio)).pipe(
+      map(bs => this.toFront(bs))
     );
   }
 
   update(id: number, servicio: Servicio): Observable<Servicio> {
-    const backendServicio = {
-      nombre: servicio.title,
-      descripcion: servicio.subtitle,
-      precio: servicio.precio ?? 0,
-      imagenUrl: servicio.image,
-      capacidad: 1,
-      precioTipo: 'Por persona',
-      horario: servicio.features.join(', ')
-    };
-    return this.http.put<any>(`${this.apiUrl}/${id}`, backendServicio).pipe(
-      map(bs => ({
-        id: bs.id,
-        title: bs.nombre,
-        subtitle: bs.descripcion,
-        description: bs.descripcion,
-        image: bs.imagenUrl,
-        precio: bs.precio,
-        precioTipo: bs.precioTipo,
-        horario: bs.horario,
-        capacidad: bs.capacidad,
-        features: bs.horario ? [bs.horario] : []
-      }))
+    return this.http.put<any>(`${this.apiUrl}/${id}`, this.toBack(servicio)).pipe(
+      map(bs => this.toFront(bs))
     );
   }
 
