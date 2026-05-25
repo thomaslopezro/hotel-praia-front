@@ -14,6 +14,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MapComponent } from './components/map/map.component';
 import { TestimonialsCardsComponent } from './components/testimonials/testimonials-cards/testimonials-cards.component';
+import { ChatbotWidgetComponent } from '../../components/chatbot-widget/chatbot-widget.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { TestimonialsCardsComponent } from './components/testimonials/testimonia
     ReservationComponent,
     FooterComponent,
     MapComponent,
-    TestimonialsCardsComponent
+    TestimonialsCardsComponent,
+    ChatbotWidgetComponent
   ],
   imports: [
     CommonModule,

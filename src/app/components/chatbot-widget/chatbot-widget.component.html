@@ -1,0 +1,52 @@
+<!-- Burbuja flotante (cerrada) -->
+<button *ngIf="!abierto" (click)="toggle()" class="chatbot-fab" aria-label="Abrir chat">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+  </svg>
+</button>
+
+<!-- Panel del chat (abierto) -->
+<div *ngIf="abierto" class="chatbot-panel">
+  <header class="chatbot-header">
+    <div class="chatbot-header-info">
+      <div class="chatbot-avatar">P</div>
+      <div>
+        <div class="chatbot-title">Asistente Praia</div>
+        <div class="chatbot-status">
+          <span class="status-dot"></span> En línea
+        </div>
+      </div>
+    </div>
+    <button (click)="toggle()" class="chatbot-close" aria-label="Cerrar chat">×</button>
+  </header>
+
+  <div class="chatbot-messages">
+    <div *ngFor="let m of messages"
+         class="chatbot-bubble"
+         [class.user]="m.role === 'user'"
+         [class.assistant]="m.role === 'assistant'">
+      {{ m.content }}
+    </div>
+    <div *ngIf="enviando" class="chatbot-bubble assistant typing">
+      <span></span><span></span><span></span>
+    </div>
+    <div #scrollAnchor></div>
+  </div>
+
+  <footer class="chatbot-input">
+    <textarea
+      [(ngModel)]="borrador"
+      (keydown)="onKeydown($event)"
+      placeholder="Escribe tu pregunta..."
+      rows="1"
+      [disabled]="enviando"></textarea>
+    <button (click)="enviar()" [disabled]="enviando || !borrador.trim()" aria-label="Enviar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"></line>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+      </svg>
+    </button>
+  </footer>
+</div>

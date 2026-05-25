@@ -196,6 +196,40 @@
             </div>
           </div>
         </div>
+
+        <!-- Reporte Excel -->
+        <div class="mt-6 rounded-xl border border-slate-700/60 bg-slate-800/30 p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h4M3 7h18M5 7v12a2 2 0 002 2h10a2 2 0 002-2V7M9 3h6a2 2 0 012 2v2H7V5a2 2 0 012-2z"></path>
+            </svg>
+            <h4 class="text-sm font-semibold uppercase tracking-wide text-slate-200">Reporte de pagos</h4>
+          </div>
+          <p class="text-xs text-slate-400 mb-3">Descarga un Excel con las habitaciones pagadas y los servicios cobrados en el rango.</p>
+
+          <div class="grid grid-cols-2 gap-3 mb-3">
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">Desde</label>
+              <input type="date" [(ngModel)]="reporteDesde" [disabled]="descargandoReporte"
+                class="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 outline-none focus:border-emerald-500">
+            </div>
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">Hasta</label>
+              <input type="date" [(ngModel)]="reporteHasta" [disabled]="descargandoReporte"
+                class="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 outline-none focus:border-emerald-500">
+            </div>
+          </div>
+
+          <p *ngIf="errorReporte" class="text-xs text-rose-400 mb-2">{{ errorReporte }}</p>
+
+          <button (click)="descargarReporte()" [disabled]="descargandoReporte"
+            class="w-full rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 text-sm font-medium text-white transition flex items-center justify-center gap-2">
+            <svg *ngIf="!descargandoReporte" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+            {{ descargandoReporte ? 'Generando...' : 'Descargar Excel' }}
+          </button>
+        </div>
       </div>
     </div>
 

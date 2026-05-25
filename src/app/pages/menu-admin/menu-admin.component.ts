@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { EstadisticaService, EstadisticasDashboard, ProximaLlegada } from 'src/app/services/estadistica.service';
@@ -28,11 +29,27 @@ export class MenuAdminComponent implements OnInit {
     totalTestimonios: 0
   };
 
+  // Fechas para el filtro del reporte Excel. Default: primer dia del mes -> hoy.
+  reporteDesde: string = this.primerDiaDelMes();
+  reporteHasta: string = this.hoyISO();
+  descargandoReporte: boolean = false;
+  errorReporte: string = '';
+
   constructor(
     private authService: AuthService,
     private estadisticaService: EstadisticaService,
+    private http: HttpClient,
     private router: Router
   ) {}
+
+  private primerDiaDelMes(): string {
+    const d = new Date();
+    return new Date(d.getFullYear(), d.getMonth(), 1).toISOString().substring(0, 10);
+  }
+
+  private hoyISO(): string {
+    return new Date().toISOString().substring(0, 10);
+  }
 
   ngOnInit(): void {
     const currentUser = this.authService.getCurrentUser();
@@ -82,5 +99,37 @@ export class MenuAdminComponent implements OnInit {
   calificacionLabel(): string {
     if (!this.estadisticas.totalTestimonios) return 'Sin reseñas';
     return (this.estadisticas.calificacion ?? 0).toFixed(1);
+  }
+
+  descargarReporte(): void {
+    this.errorReporte = '';
+    if (!this.reporteDesde || !this.reporteHasta) {
+      this.errorReporte = 'Selecciona ambas fechas.';
+      return;
+    }
+    if (this.reporteDesde > this.reporteHasta) {
+      this.errorReporte = 'La fecha "desde" no puede ser mayor que "hasta".';
+      return;
+    }
+    this.descargandoReporte = true;
+    const url = `http://localhost:8080/api/reportes/pagos.xlsx?desde=${this.reporteDesde}&hasta=${this.reporteHasta}`;
+    this.http.get(url, { responseType: 'blob' }).subscribe({
+      next: (blob) => {
+        const a = document.createElement('a');
+        const downloadUrl = window.URL.createObjectURL(blob);
+        a.href = downloadUrl;
+        a.download = `reporte-pagos-${this.reporteDesde}_${this.reporteHasta}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(downloadUrl);
+        this.descargandoReporte = false;
+      },
+      error: (err) => {
+        console.error('Error descargando reporte:', err);
+        this.errorReporte = 'No se pudo generar el reporte.';
+        this.descargandoReporte = false;
+      }
+    });
   }
 }
