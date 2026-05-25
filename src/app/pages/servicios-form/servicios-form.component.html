@@ -70,6 +70,21 @@
           placeholder="Masajes, Sauna, Jacuzzi, Aromaterapia">
       </div>
 
+      <div>
+        <label class="block text-sm text-slate-300 mb-1">Precio (USD)</label>
+        <input
+          type="number"
+          min="0"
+          step="1"
+          formControlName="precio"
+          class="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-2 text-sm outline-none focus:border-sky-500"
+          placeholder="Ej: 50">
+        <p *ngIf="form.get('precio')?.touched && form.get('precio')?.invalid"
+           class="text-xs text-rose-400 mt-1">
+          Ingresa un precio válido (0 o mayor).
+        </p>
+      </div>
+
       <div class="pt-2 flex gap-2">
         <button
           type="submit"

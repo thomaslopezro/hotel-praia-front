@@ -168,11 +168,8 @@
               </svg>
               MES EN CURSO
             </h3>
-            <p class="text-xs text-slate-400 mt-1">Abril 2026</p>
+            <p class="text-xs text-slate-400 mt-1">{{ mesActualLabel() }}</p>
           </div>
-          <span class="text-xs px-2 py-1 rounded-full bg-emerald-600/20 text-emerald-400">
-            +{{ porcentajeCrecimiento }}% vs. periodo anterior
-          </span>
         </div>
         
         <div class="text-4xl font-bold text-white mb-2">$ {{ formatearIngresos() }}</div>
@@ -193,56 +190,14 @@
             <div class="text-xs text-slate-400 mt-1">Ocupación promedio</div>
           </div>
           <div class="rounded-xl bg-slate-800/50 p-3 text-center hover:bg-slate-800 transition">
-            <div class="text-2xl font-semibold text-amber-400">4.8</div>
-            <div class="text-xs text-slate-400 mt-1">Calificación ★</div>
+            <div class="text-2xl font-semibold text-amber-400">{{ calificacionLabel() }}</div>
+            <div class="text-xs text-slate-400 mt-1">
+              Calificación ★ <span *ngIf="estadisticas.totalTestimonios">({{ estadisticas.totalTestimonios }})</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Acciones rápidas -->
-    <section class="mb-8">
-      <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-        </svg>
-        ACCIONES RÁPIDAS
-      </h2>
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <button (click)="navegarA('/habitaciones/admin')" 
-          class="group rounded-xl border border-slate-800 bg-gradient-to-br from-slate-900/40 to-slate-900/20 p-4 text-left hover:border-slate-700 hover:bg-slate-900/60 transition-all duration-200">
-          <div class="text-3xl mb-2 group-hover:scale-110 transition-transform duration-200 inline-block">🏨</div>
-          <div class="font-medium mt-2">Habitaciones</div>
-          <div class="text-xs text-slate-400 mt-1">Gestionar disponibilidad y tipos</div>
-        </button>
-        <button (click)="navegarA('/servicios/admin')" 
-          class="group rounded-xl border border-slate-800 bg-gradient-to-br from-slate-900/40 to-slate-900/20 p-4 text-left hover:border-slate-700 hover:bg-slate-900/60 transition-all duration-200">
-          <div class="text-3xl mb-2 group-hover:scale-110 transition-transform duration-200 inline-block">🍽️</div>
-          <div class="font-medium mt-2">Servicios</div>
-          <div class="text-xs text-slate-400 mt-1">Administrar servicios del hotel</div>
-        </button>
-        <button (click)="navegarA('/tipos-habitacion')" 
-          class="group rounded-xl border border-slate-800 bg-gradient-to-br from-slate-900/40 to-slate-900/20 p-4 text-left hover:border-slate-700 hover:bg-slate-900/60 transition-all duration-200">
-          <div class="text-3xl mb-2 group-hover:scale-110 transition-transform duration-200 inline-block">🛏️</div>
-          <div class="font-medium mt-2">Tipos Habitación</div>
-          <div class="text-xs text-slate-400 mt-1">Configurar categorías y precios</div>
-        </button>
-        <button (click)="navegarA('/reservas/admin')" 
-          class="group rounded-xl border border-slate-800 bg-gradient-to-br from-slate-900/40 to-slate-900/20 p-4 text-left hover:border-slate-700 hover:bg-slate-900/60 transition-all duration-200">
-          <div class="text-3xl mb-2 group-hover:scale-110 transition-transform duration-200 inline-block">📅</div>
-          <div class="font-medium mt-2">Reservas</div>
-          <div class="text-xs text-slate-400 mt-1">Ver y gestionar reservas</div>
-        </button>
-        <button (click)="navegarA('/operador/servicios-cuenta')" 
-  class="group rounded-xl border border-slate-800 bg-gradient-to-br from-slate-900/40 to-slate-900/20 p-4 text-left hover:border-slate-700 hover:bg-slate-900/60 transition-all duration-200">
-  <div class="text-3xl mb-2 group-hover:scale-110 transition-transform duration-200 inline-block">➕</div>
-  <div class="font-medium mt-2">Agregar Servicio</div>
-  <div class="text-xs text-slate-400 mt-1">Agregar servicios a cuenta de huésped</div>
-</button>
-
-
-      </div>
-    </section>
 
     <!-- Footer -->
     <div class="text-center text-xs text-slate-500 border-t border-slate-800 pt-6 mt-4">

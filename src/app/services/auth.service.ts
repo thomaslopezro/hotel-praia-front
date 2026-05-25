@@ -65,6 +65,21 @@ export class AuthService {
     );
   }
 
+  // Pide al back que envie un correo con link para recuperar la contraseña.
+  // El back responde OK aunque el correo no exista (anti-enumeracion).
+  solicitarRecuperacion(correo: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/recuperar`, { correo }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Envia el token (del email) + la nueva contraseña al back para aplicar el cambio.
+  restablecerPassword(token: string, nuevaPassword: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/restablecer`, { token, nuevaPassword }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   // Obtener un usuario específico por ID (requerido por mi-perfil.component)
   // Apunta a /api/huespedes/{id} porque ahi vive el endpoint en el back.
   obtenerPorId(id: number | null): Observable<UserResponseDTO> {

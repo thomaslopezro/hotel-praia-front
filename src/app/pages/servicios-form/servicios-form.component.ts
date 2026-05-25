@@ -18,6 +18,7 @@ export class ServicioFormComponent implements OnInit {
     description: new FormControl('', Validators.required),
     image: new FormControl('', Validators.required),
     features: new FormControl('', Validators.required),
+    precio: new FormControl<number | null>(null, [Validators.required, Validators.min(0)]),
   });
 
   constructor(
@@ -41,6 +42,7 @@ export class ServicioFormComponent implements OnInit {
             description: servicio.description,
             image: servicio.image,
             features: servicio.features.join(', '), // Convertir array a string
+            precio: servicio.precio ?? 0,
           });
         },
         error: (err) => console.error('Error cargando servicio:', err)
@@ -63,6 +65,7 @@ export class ServicioFormComponent implements OnInit {
         .split(',')
         .map(f => f.trim())
         .filter(f => f.length > 0),
+      precio: valor.precio ?? 0,
     };
 
     if (this.editing && this.servicioId !== null) {

@@ -26,6 +26,8 @@ import { AdminNavbarComponent } from './pages/admin-navbar/admin-navbar.componen
 import { OperatorNavbarComponent } from './pages/operator-navbar/operator-navbar.component';
 import { OperatorHeaderComponent } from './pages/operator-header/operator-header.component';
 import { VerificacionComponent } from './pages/verificacion/verificacion.component';
+import { RecuperarPasswordComponent } from './pages/recuperar-password/recuperar-password.component';
+import { RestablecerPasswordComponent } from './pages/restablecer-password/restablecer-password.component';
 import { PagoExitosoComponent } from './pages/pago-exitoso/pago-exitoso.component';
 import { PagoCanceladoComponent } from './pages/pago-cancelado/pago-cancelado.component';
 import { OperadoresAdminComponent } from './pages/operadores-admin/operadores-admin.component';
@@ -55,6 +57,8 @@ import { JwtInterceptor } from './services/jwt.interceptor';
     OperatorNavbarComponent,
     OperatorHeaderComponent,
     VerificacionComponent,
+    RecuperarPasswordComponent,
+    RestablecerPasswordComponent,
     PagoExitosoComponent,
     PagoCanceladoComponent,
     OperadoresAdminComponent,

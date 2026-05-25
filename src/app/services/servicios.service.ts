@@ -49,7 +49,7 @@ export class ServiciosService {
     const backendServicio = {
       nombre: servicio.title,
       descripcion: servicio.subtitle,
-      precio: 0, // necesitas agregar un campo precio en tu formulario
+      precio: servicio.precio ?? 0,
       imagenUrl: servicio.image,
       capacidad: 1,
       precioTipo: 'Por persona',
@@ -75,7 +75,7 @@ export class ServiciosService {
     const backendServicio = {
       nombre: servicio.title,
       descripcion: servicio.subtitle,
-      precio: 0,
+      precio: servicio.precio ?? 0,
       imagenUrl: servicio.image,
       capacidad: 1,
       precioTipo: 'Por persona',

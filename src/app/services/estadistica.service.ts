@@ -21,6 +21,8 @@ export interface EstadisticasDashboard {
   ingresosMes: number;
   proximasLlegadas: ProximaLlegada[];
   porcentajeOcupacion: number;
+  calificacion?: number;
+  totalTestimonios?: number;
 }
 
 @Injectable({

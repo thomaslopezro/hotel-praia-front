@@ -12,6 +12,8 @@ import { ServicioFormComponent } from './pages/servicios-form/servicios-form.com
 import { LoginComponent } from './pages/login/login.component';
 import { RegistroComponent } from './pages/registro/registro.component';
 import { VerificacionComponent } from './pages/verificacion/verificacion.component';
+import { RecuperarPasswordComponent } from './pages/recuperar-password/recuperar-password.component';
+import { RestablecerPasswordComponent } from './pages/restablecer-password/restablecer-password.component';
 import { PagoExitosoComponent } from './pages/pago-exitoso/pago-exitoso.component';
 import { PagoCanceladoComponent } from './pages/pago-cancelado/pago-cancelado.component';
 
@@ -64,6 +66,16 @@ const routes: Routes = [
   {
     path: 'verificar',
     component: VerificacionComponent
+  },
+
+  {
+    path: 'recuperar-password',
+    component: RecuperarPasswordComponent
+  },
+
+  {
+    path: 'restablecer-password',
+    component: RestablecerPasswordComponent
   },
 
   {

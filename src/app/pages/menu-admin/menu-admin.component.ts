@@ -23,10 +23,10 @@ export class MenuAdminComponent implements OnInit {
     serviciosActivos: 0,
     totalServicios: 0,
     ingresosMes: 0,
-    proximasLlegadas: []
+    proximasLlegadas: [],
+    calificacion: 0,
+    totalTestimonios: 0
   };
-
-  porcentajeCrecimiento: number = 18;
 
   constructor(
     private authService: AuthService,
@@ -69,5 +69,18 @@ export class MenuAdminComponent implements OnInit {
 
   formatearIngresos(): string {
     return this.estadisticas.ingresosMes.toLocaleString('es-CO');
+  }
+
+  // Mes y año actuales en formato legible "Mayo 2026"
+  mesActualLabel(): string {
+    const f = new Intl.DateTimeFormat('es-CO', { month: 'long', year: 'numeric' });
+    const txt = f.format(this.fechaActual);
+    return txt.charAt(0).toUpperCase() + txt.slice(1);
+  }
+
+  // Devuelve la calificacion del back o "Sin reseñas" si no hay testimonios
+  calificacionLabel(): string {
+    if (!this.estadisticas.totalTestimonios) return 'Sin reseñas';
+    return (this.estadisticas.calificacion ?? 0).toFixed(1);
   }
 }
