@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { EstadisticaService, EstadisticasDashboard, ProximaLlegada } from 'src/app/services/estadistica.service';
 
+import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-menu-admin',
   templateUrl: './menu-admin.component.html',
@@ -112,7 +113,7 @@ export class MenuAdminComponent implements OnInit {
       return;
     }
     this.descargandoReporte = true;
-    const url = `http://localhost:8080/api/reportes/pagos.xlsx?desde=${this.reporteDesde}&hasta=${this.reporteHasta}`;
+    const url = `${environment.apiUrl}/api/reportes/pagos.xlsx?desde=${this.reporteDesde}&hasta=${this.reporteHasta}`;
     this.http.get(url, { responseType: 'blob' }).subscribe({
       next: (blob) => {
         const a = document.createElement('a');

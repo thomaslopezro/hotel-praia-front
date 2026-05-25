@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../environments/environment';
 export interface TestimonioBack {
   id?: number;
   autor: string;
@@ -14,7 +15,7 @@ export interface TestimonioBack {
   providedIn: 'root'
 })
 export class TestimonioService {
-  private apiUrl = 'http://localhost:8080/api/testimonios';
+  private apiUrl = `${environment.apiUrl}/api/testimonios`;
 
   constructor(private http: HttpClient) {}
 

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
+import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-verificacion',
   templateUrl: './verificacion.component.html'
@@ -23,7 +24,7 @@ export class VerificacionComponent implements OnInit {
       this.mensaje = 'No se recibió un token de verificación.';
       return;
     }
-    this.http.get<any>(`http://localhost:8080/api/auth/verificar?token=${encodeURIComponent(token)}`)
+    this.http.get<any>(`${environment.apiUrl}/api/auth/verificar?token=${encodeURIComponent(token)}`)
       .subscribe({
         next: (resp) => {
           this.estado = 'ok';

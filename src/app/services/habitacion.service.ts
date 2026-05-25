@@ -5,11 +5,12 @@ import { map, switchMap } from 'rxjs/operators';
 import { Habitacion, TipoHabitacion } from '../modelo/habitacion';
 import { TipoHabitacionService } from './tipo-habitacion.service';
 
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class HabitacionService {
-  private apiUrl = 'http://localhost:8080/api/habitaciones';
+  private apiUrl = `${environment.apiUrl}/api/habitaciones`;
 
   constructor(
     private http: HttpClient,

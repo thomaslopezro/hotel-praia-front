@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../environments/environment';
 export interface CheckoutResponse {
   url: string;
   sessionId: string;
@@ -11,7 +12,7 @@ export interface CheckoutResponse {
   providedIn: 'root'
 })
 export class PagoService {
-  private apiUrl = 'http://localhost:8080/api/pagos';
+  private apiUrl = `${environment.apiUrl}/api/pagos`;
 
   constructor(private http: HttpClient) {}
 

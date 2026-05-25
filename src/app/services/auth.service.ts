@@ -5,6 +5,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { AuthRequestDTO, UserResponseDTO } from '../interfaces/dtos';
 import { Router } from '@angular/router';
 
+import { environment } from '../../environments/environment';
 // Exportamos este alias para no romper la importación en login.component.ts
 export type AuthResponse = UserResponseDTO;
 
@@ -12,7 +13,7 @@ export type AuthResponse = UserResponseDTO;
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/api/auth';
+  private apiUrl = `${environment.apiUrl}/api/auth`;
   private userSubject = new BehaviorSubject<UserResponseDTO | null>(null);
 
   constructor(private http: HttpClient, private router: Router) {
@@ -83,7 +84,7 @@ export class AuthService {
   // Obtener un usuario específico por ID (requerido por mi-perfil.component)
   // Apunta a /api/huespedes/{id} porque ahi vive el endpoint en el back.
   obtenerPorId(id: number | null): Observable<UserResponseDTO> {
-    return this.http.get<any>(`http://localhost:8080/api/huespedes/${id}`).pipe(
+    return this.http.get<any>(`${environment.apiUrl}/api/huespedes/${id}`).pipe(
       tap(huesped => {
         // El back devuelve la entidad Huesped con el correo dentro de user.username.
         // Aplanamos a correo/email para que los componentes los puedan usar directo.
@@ -100,14 +101,14 @@ export class AuthService {
 
   // Actualizar datos del usuario (requerido por mi-perfil.component)
   actualizar(id: number | null, userData: any): Observable<any> {
-    return this.http.put<any>(`http://localhost:8080/api/huespedes/${id}`, userData).pipe(
+    return this.http.put<any>(`${environment.apiUrl}/api/huespedes/${id}`, userData).pipe(
       catchError(this.handleError)
     );
   }
 
   // Eliminar usuario (requerido por mi-perfil.component)
   eliminar(id: number | null): Observable<any> {
-    return this.http.delete(`http://localhost:8080/api/huespedes/${id}`).pipe(
+    return this.http.delete(`${environment.apiUrl}/api/huespedes/${id}`).pipe(
       catchError(this.handleError)
     );
   }

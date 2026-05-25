@@ -3,11 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ItemCuenta } from '../modelo/item-cuenta';
 
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class CuentaService {
-  private apiUrl = 'http://localhost:8080/api/cuentas';
+  private apiUrl = `${environment.apiUrl}/api/cuentas`;
 
   constructor(private http: HttpClient) {}
 
