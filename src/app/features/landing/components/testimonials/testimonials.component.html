@@ -7,11 +7,88 @@
       </p>
     </div>
 
-    <div class="testimonios-grid">
+    <!-- Mensaje de exito -->
+    <div *ngIf="mensajeOk"
+      style="max-width:520px;margin:0 auto 20px;padding:12px 16px;border-radius:10px;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;text-align:center;">
+      {{ mensajeOk }}
+    </div>
+
+    <!-- Boton para abrir formulario (solo si esta logueado y no esta abierto) -->
+    <div *ngIf="authService.estaLogueado() && !mostrarForm"
+      style="text-align:center;margin-bottom:24px;">
+      <button (click)="abrirForm()"
+        style="background:#b89a5e;color:#0f172a;border:none;padding:12px 28px;border-radius:10px;font-weight:600;cursor:pointer;font-size:14px;letter-spacing:0.5px;">
+        + Deja tu testimonio
+      </button>
+    </div>
+
+    <!-- Llamado a login si no esta logueado -->
+    <div *ngIf="!authService.estaLogueado()"
+      style="text-align:center;margin-bottom:24px;color:#94a3b8;font-size:14px;">
+      <a routerLink="/login" style="color:#b89a5e;text-decoration:underline;">Inicia sesión</a>
+      para dejar tu testimonio.
+    </div>
+
+    <!-- Formulario inline -->
+    <div *ngIf="mostrarForm"
+      style="max-width:600px;margin:0 auto 32px;padding:24px;border-radius:14px;background:rgba(15,23,42,0.6);border:1px solid rgba(184,154,94,0.3);">
+
+      <h3 style="margin:0 0 16px 0;color:#fff;font-size:18px;">Cuéntanos tu experiencia</h3>
+
+      <!-- Estrellas (clickables) -->
+      <div style="margin-bottom:16px;">
+        <label style="display:block;color:#cbd5e1;font-size:13px;margin-bottom:8px;">Calificación</label>
+        <div style="display:flex;gap:6px;">
+          <span *ngFor="let i of [1,2,3,4,5]"
+            (click)="setEstrellas(i)"
+            [style.color]="i <= nuevasEstrellas ? '#fbbf24' : '#475569'"
+            style="font-size:32px;cursor:pointer;line-height:1;">★</span>
+        </div>
+      </div>
+
+      <!-- Texto -->
+      <div style="margin-bottom:16px;">
+        <label style="display:block;color:#cbd5e1;font-size:13px;margin-bottom:8px;">Tu comentario</label>
+        <textarea [(ngModel)]="nuevoTexto" rows="4" maxlength="500"
+          placeholder="Comparte tu experiencia en Hotel Praia..."
+          style="width:100%;padding:12px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:#fff;font-family:inherit;resize:vertical;box-sizing:border-box;"></textarea>
+      </div>
+
+      <!-- Error -->
+      <div *ngIf="errorForm"
+        style="margin-bottom:12px;padding:10px;border-radius:8px;background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.4);color:#fda4af;font-size:13px;">
+        {{ errorForm }}
+      </div>
+
+      <!-- Acciones -->
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button (click)="cancelar()" [disabled]="guardando"
+          style="background:transparent;color:#cbd5e1;border:1px solid #334155;padding:10px 18px;border-radius:8px;cursor:pointer;">
+          Cancelar
+        </button>
+        <button (click)="enviar()" [disabled]="guardando"
+          style="background:#b89a5e;color:#0f172a;border:none;padding:10px 22px;border-radius:8px;cursor:pointer;font-weight:600;">
+          {{ guardando ? 'Enviando...' : 'Publicar' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Cargando -->
+    <div *ngIf="cargando" style="text-align:center;color:#94a3b8;padding:20px;">
+      Cargando testimonios...
+    </div>
+
+    <!-- Sin testimonios todavia -->
+    <div *ngIf="!cargando && testimonials.length === 0"
+      style="text-align:center;color:#94a3b8;padding:40px;border:1px dashed #334155;border-radius:12px;max-width:520px;margin:0 auto;">
+      Aún no hay testimonios. ¡Sé el primero en compartir tu experiencia!
+    </div>
+
+    <div class="testimonios-grid" *ngIf="!cargando && testimonials.length > 0">
       <app-testimonials-cards
         *ngFor="let testimonial of testimonials"
         [testimonial]="testimonial"
       ></app-testimonials-cards>
+    </div>
   </div>
-  </div>  
 </section>

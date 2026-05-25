@@ -17,36 +17,8 @@
 <!-- Dashboard -->
 <div *ngIf="!loading && !error">
   
-  <!-- Header -->
-  <!-- Header -->
-<header class="border-b border-slate-800 bg-gradient-to-r from-slate-950 to-slate-900 text-slate-100 sticky top-0 z-50">
-  <div class="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      
-      <div class="w-10 h-10 rounded-xl bg-sky-500/10 flex items-center justify-center overflow-hidden">
-        <img src="assets/images/logoPraia.png" alt="Praia Hotel" class="w-8 h-8 object-contain">
-      </div>
-      <div>
-        <h1 class="text-xl font-bold tracking-tight">Praia</h1>
-        <p class="text-xs text-slate-400">PANEL DE CONTROL</p>
-      </div>
-      <span class="ml-3 text-xs px-3 py-1 rounded-full bg-sky-600/20 text-sky-300 border border-sky-600/30">Portal Operador</span>
-    </div>
-    <div class="flex items-center gap-5">
-      <div class="text-right hidden sm:block">
-        <p class="text-sm font-medium">Bienvenido, {{ operadorNombre }}</p>
-        <p class="text-xs text-slate-400">{{ fechaActual | date:'EEEE, d MMMM yyyy' }}</p>
-      </div>
-      <button (click)="logout()" 
-        class="rounded-xl border border-slate-700 px-4 py-2 text-sm font-medium hover:bg-slate-800 hover:border-slate-600 transition-all duration-200 flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-        </svg>
-        Cerrar sesión
-      </button>
-    </div>
-  </div>
-</header>
+  <!-- Header unificado del operador -->
+  <app-operator-header></app-operator-header>
 
   <app-operator-navbar></app-operator-navbar>
 

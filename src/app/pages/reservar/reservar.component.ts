@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ReservaService } from 'src/app/services/reserva.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { TipoHabitacionService } from 'src/app/services/tipo-habitacion.service';
+import { PagoService } from 'src/app/services/pago.service';
 
 @Component({
   selector: 'app-reservar',
@@ -16,11 +17,25 @@ export class ReservarComponent implements OnInit {
   fechaFin: string = '';
   personas: number = 1;
 
+  // Estado de confirmacion (se muestra cuando la reserva se crea OK)
+  reservaConfirmada: {
+    habitacionCodigo: string;
+    reservaId?: string;
+    fechaInicio: string;
+    fechaFin: string;
+    personas: number;
+  } | null = null;
+
+  error: string = '';
+  guardando: boolean = false;
+
   constructor(
     private route: ActivatedRoute,
     private tipoHabitacionService: TipoHabitacionService,
     private reservaService: ReservaService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router,
+    private pagoService: PagoService
   ) {}
 
   ngOnInit(): void {
@@ -31,42 +46,52 @@ export class ReservarComponent implements OnInit {
         this.tipoHabitacion = data;
       },
       error: () => {
-        alert('Error cargando tipo de habitación');
+        this.error = 'Error cargando tipo de habitación';
       }
     });
   }
 
   reservar(): void {
+    this.error = '';
     const huespedId = this.authService.getUsuarioId();
 
     if (!huespedId) {
-      alert('Debes iniciar sesión');
+      this.error = 'Debes iniciar sesión';
       return;
     }
 
     if (!this.fechaInicio || !this.fechaFin) {
-      alert('Selecciona fechas');
+      this.error = 'Selecciona las fechas';
       return;
     }
 
-    const data = {
+    // En lugar de crear la reserva directamente, iniciamos un pago en Stripe.
+    // Cuando Stripe confirme el pago, /pago-exitoso llama a /api/pagos/reserva/confirmar
+    // que es quien finalmente crea la reserva.
+    this.guardando = true;
+    this.pagoService.iniciarPagoReserva({
       tipoHabitacionId: this.tipoHabitacion.id,
-      huespedId: huespedId,
+      huespedId,
       cantidadPersonas: this.personas,
       fechaInicio: this.fechaInicio,
       fechaFin: this.fechaFin
-    };
-
-    this.reservaService.crearReservaPorTipo(data).subscribe({
+    }).subscribe({
       next: (resp) => {
-  alert(
-    'Reserva creada correctamente. Habitación asignada: ' +
-    resp.habitacionCodigo
-  );
-},
+        // Redirige al usuario a la pagina de checkout de Stripe
+        window.location.href = resp.url;
+      },
       error: (err) => {
-        alert(err.error?.err || 'Error al reservar');
+        this.guardando = false;
+        this.error = err?.error?.err || 'No se pudo iniciar el pago';
       }
     });
+  }
+
+  irAMisReservas(): void {
+    this.router.navigate(['/mi-perfil']);
+  }
+
+  volverAlInicio(): void {
+    this.router.navigate(['/']);
   }
 }

@@ -1,0 +1,72 @@
+<div style="min-height:100vh;background:linear-gradient(180deg,#08121a,#023047);display:flex;align-items:center;justify-content:center;padding:24px;">
+  <div style="max-width:560px;width:100%;background:rgba(15,23,42,0.65);border:1px solid #1e293b;border-radius:18px;padding:48px 36px;text-align:center;">
+
+    <div style="margin-bottom:14px;">
+      <img src="assets/images/logoPraia.png" alt="Hotel Praia"
+        style="width:64px;height:64px;object-fit:contain;background:#fff;border-radius:14px;padding:6px;">
+    </div>
+    <p style="color:#b89a5e;letter-spacing:0.28em;font-size:11px;text-transform:uppercase;margin:0 0 8px;">HOTEL PRAIA</p>
+    <h1 style="font-family:Georgia,serif;color:#d6b36a;font-size:30px;margin:0 0 28px;">Estado del pago</h1>
+
+    <!-- Cargando -->
+    <div *ngIf="estado === 'cargando'" style="color:#cbd5e1;">
+      <div class="spinner" style="margin:0 auto 16px;"></div>
+      <p>Verificando tu pago con Stripe...</p>
+    </div>
+
+    <!-- Exito -->
+    <div *ngIf="estado === 'ok'">
+      <div style="font-size:72px;margin-bottom:12px;">✅</div>
+      <h2 style="color:#10b981;margin:0 0 8px;">¡Pago exitoso!</h2>
+      <p style="color:#a7f3d0;font-size:15px;margin:0 0 24px;line-height:1.6;">{{ mensaje }}</p>
+
+      <!-- Datos extra si es reserva -->
+      <div *ngIf="tipo === 'reserva' && detalles?.habitacionCodigo"
+        style="background:rgba(15,23,42,0.6);border:1px solid #1e293b;border-radius:10px;padding:16px;margin-bottom:24px;text-align:left;">
+        <div style="display:flex;justify-content:space-between;padding:6px 0;">
+          <span style="color:#94a3b8;">Habitación asignada</span>
+          <strong style="color:#fbbf24;">{{ detalles.habitacionCodigo }}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0;">
+          <span style="color:#94a3b8;">Número de reserva</span>
+          <strong>#{{ detalles.reservaId }}</strong>
+        </div>
+      </div>
+
+      <!-- Datos extra si es servicios -->
+      <div *ngIf="tipo === 'servicios' && detalles?.totalPagado"
+        style="background:rgba(15,23,42,0.6);border:1px solid #1e293b;border-radius:10px;padding:16px;margin-bottom:24px;text-align:left;">
+        <div style="display:flex;justify-content:space-between;padding:6px 0;">
+          <span style="color:#94a3b8;">Total cobrado</span>
+          <strong style="color:#fbbf24;">${{ detalles.totalPagado }}</strong>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        <button *ngIf="tipo === 'reserva'" (click)="irAMisReservas()"
+          style="background:linear-gradient(135deg,#d6b36a,#b99243);color:#08121a;border:none;padding:12px 28px;border-radius:999px;font-weight:600;cursor:pointer;">
+          Ver mis reservas
+        </button>
+        <button *ngIf="tipo === 'servicios'" (click)="irAReservas()"
+          style="background:linear-gradient(135deg,#d6b36a,#b99243);color:#08121a;border:none;padding:12px 28px;border-radius:999px;font-weight:600;cursor:pointer;">
+          Volver a reservas
+        </button>
+        <button (click)="irAlInicio()"
+          style="background:transparent;color:#cbd5e1;border:1px solid #334155;padding:12px 28px;border-radius:999px;cursor:pointer;">
+          Inicio
+        </button>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="estado === 'error'">
+      <div style="font-size:72px;margin-bottom:12px;">⚠️</div>
+      <h2 style="color:#fda4af;margin:0 0 8px;">No se pudo confirmar el pago</h2>
+      <p style="color:#fda4af;font-size:14px;margin:0 0 24px;line-height:1.6;">{{ mensaje }}</p>
+      <button (click)="irAlInicio()"
+        style="background:transparent;color:#cbd5e1;border:1px solid #334155;padding:12px 28px;border-radius:999px;cursor:pointer;">
+        Volver al inicio
+      </button>
+    </div>
+  </div>
+</div>

@@ -63,6 +63,11 @@ finalizarReserva(id: number): Observable<any> {
     return this.http.put(`${this.apiUrl}/${id}/finalizar`, {});
 }
 
+  // Factura completa de la reserva (habitacion + servicios)
+  getFactura(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}/factura`);
+  }
+
   private mapear(item: any): Reserva {
     return {
       id: item.id,

@@ -1,4 +1,6 @@
-/* You can add global styles to this file, and also import other style files */
+/* ============================================================
+   ESTILOS GLOBALES
+   ============================================================ */
 html,
 body {
   margin: 0;
@@ -6,15 +8,59 @@ body {
   width: 100%;
   min-height: 100%;
   background: #08121a;
+
+  /* Evita scroll horizontal en TODA la app por culpa de elementos que
+     se salgan accidentalmente en pantallas pequenas. */
+  overflow-x: hidden;
 }
 
 * {
   box-sizing: border-box;
 }
 
+/* Que ninguna imagen rompa el layout en movil */
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
 body {
   font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* ============================================================
+   TABLAS RESPONSIVE - aplica a cualquier <table> sin tener que
+   tocar cada pagina. En movil scrollea horizontal en vez de cortar.
+   ============================================================ */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Wrappers comunes de tablas (clases de tailwind ya usadas) */
+.overflow-auto,
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ============================================================
+   FORMULARIOS - inputs no se rompen en movil
+   ============================================================ */
+input,
+select,
+textarea,
+button {
+  font-family: inherit;
+  font-size: 16px; /* Evita que iOS haga zoom al enfocar inputs <16px */
+  max-width: 100%;
+}
+
+/* ============================================================
+   SPINNER
+   ============================================================ */
 .spinner {
   width: 40px;
   height: 40px;
@@ -26,4 +72,56 @@ body {
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   AJUSTES RESPONSIVE GLOBALES
+   Aplica a CUALQUIER pagina, no hace falta tocar componentes
+   ============================================================ */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  /* Reducir paddings de containers grandes */
+  .mx-auto.max-w-7xl,
+  .mx-auto.max-w-6xl,
+  .mx-auto.max-w-5xl {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+/* Movil */
+@media (max-width: 768px) {
+  /* Forzar tablas a scrollear horizontalmente */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* Botones de accion que estan en filas no se salen */
+  .flex.justify-end,
+  .flex.gap-2 {
+    flex-wrap: wrap;
+  }
+
+  /* Reducir tamano de titulos de seccion */
+  h1 {
+    font-size: clamp(1.6rem, 6vw, 2.4rem) !important;
+  }
+
+  h2 {
+    font-size: clamp(1.3rem, 5vw, 1.8rem) !important;
+  }
+}
+
+/* Movil pequeno */
+@media (max-width: 480px) {
+  /* Botones full-width en movil pequeno */
+  .btn-confirmar,
+  .primary-btn,
+  .login-btn,
+  .registro-btn {
+    width: 100%;
+  }
 }

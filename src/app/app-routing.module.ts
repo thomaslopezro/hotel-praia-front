@@ -11,6 +11,9 @@ import { ServicioFormComponent } from './pages/servicios-form/servicios-form.com
 
 import { LoginComponent } from './pages/login/login.component';
 import { RegistroComponent } from './pages/registro/registro.component';
+import { VerificacionComponent } from './pages/verificacion/verificacion.component';
+import { PagoExitosoComponent } from './pages/pago-exitoso/pago-exitoso.component';
+import { PagoCanceladoComponent } from './pages/pago-cancelado/pago-cancelado.component';
 
 import { MiPerfilComponent } from './pages/mi-perfil/mi-perfil.component';
 
@@ -56,6 +59,21 @@ const routes: Routes = [
   {
     path: 'registro',
     component: RegistroComponent
+  },
+
+  {
+    path: 'verificar',
+    component: VerificacionComponent
+  },
+
+  {
+    path: 'pago-exitoso',
+    component: PagoExitosoComponent
+  },
+
+  {
+    path: 'pago-cancelado',
+    component: PagoCanceladoComponent
   },
 
   {

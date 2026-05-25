@@ -1,36 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from './services/auth.service';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
-
+export class AppComponent {
+  // El redirect inicial segun rol se hace en LoginComponent (despues del login)
+  // y en HomeComponent (cuando un admin/operador abre /).
+  // AppComponent NO debe forzar navegacion porque pisa URLs validas como
+  // /pago-exitoso, /verificar, /reservar-tipo/:id, etc.
   title = 'proyecto-desarrollo-web-angular';
-
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
-
-  ngOnInit(): void {
-
-    const user = this.authService.getCurrentUser();
-
-    if (user) {
-
-      if (user.rol === 'ADMIN') {
-        this.router.navigate(['/habitaciones/admin']);
-
-      } else if (user.rol === 'OPERADOR') {
-        this.router.navigate(['/menu-admin']);
-
-      } else if (user.rol === 'CLIENTE') {
-        this.router.navigate(['/']);
-      }
-    }
-  }
 }

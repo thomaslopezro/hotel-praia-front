@@ -24,6 +24,10 @@ import { MenuAdminComponent } from './pages/menu-admin/menu-admin.component';
 import { ServiciosCuentaComponent } from './pages/servicios-cuenta/servicios-cuenta.component';
 import { AdminNavbarComponent } from './pages/admin-navbar/admin-navbar.component';
 import { OperatorNavbarComponent } from './pages/operator-navbar/operator-navbar.component';
+import { OperatorHeaderComponent } from './pages/operator-header/operator-header.component';
+import { VerificacionComponent } from './pages/verificacion/verificacion.component';
+import { PagoExitosoComponent } from './pages/pago-exitoso/pago-exitoso.component';
+import { PagoCanceladoComponent } from './pages/pago-cancelado/pago-cancelado.component';
 import { OperadoresAdminComponent } from './pages/operadores-admin/operadores-admin.component';
 import { OperadoresFormComponent } from './pages/operadores-form/operadores-form.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -49,6 +53,10 @@ import { JwtInterceptor } from './services/jwt.interceptor';
     ServiciosCuentaComponent,
     AdminNavbarComponent,
     OperatorNavbarComponent,
+    OperatorHeaderComponent,
+    VerificacionComponent,
+    PagoExitosoComponent,
+    PagoCanceladoComponent,
     OperadoresAdminComponent,
     OperadoresFormComponent
  

@@ -15,7 +15,20 @@ export class AuthService {
   private apiUrl = 'http://localhost:8080/api/auth';
   private userSubject = new BehaviorSubject<UserResponseDTO | null>(null);
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) {
+    // Rehidratar la sesion desde localStorage al iniciar la app.
+    // Necesario cuando el usuario vuelve de un dominio externo (Stripe, etc)
+    // o refresca la pagina: sin esto el userSubject queda en null aunque
+    // el token siga guardado.
+    const raw = localStorage.getItem('user_data');
+    if (raw) {
+      try {
+        this.userSubject.next(JSON.parse(raw));
+      } catch {
+        localStorage.removeItem('user_data');
+      }
+    }
+  }
 
   // Cambiado para aceptar (correo, contrasena) y mapear internamente al DTO
   login(username: string, password: string): Observable<UserResponseDTO> {
@@ -23,10 +36,11 @@ export class AuthService {
       tap(response => {
         // Sincronizamos email con correo para los componentes que lo requieran
         response.correo = response.email;
-        
-        // Persistencia del token y el rol
+
+        // Persistencia del token, el rol y el user completo (para rehidratar tras redirect externo)
         localStorage.setItem('token', response.token);
         localStorage.setItem('user_role', response.rol);
+        localStorage.setItem('user_data', JSON.stringify(response));
         this.userSubject.next(response);
       }),
       catchError(this.handleError)
@@ -55,11 +69,15 @@ export class AuthService {
   // Apunta a /api/huespedes/{id} porque ahi vive el endpoint en el back.
   obtenerPorId(id: number | null): Observable<UserResponseDTO> {
     return this.http.get<any>(`http://localhost:8080/api/huespedes/${id}`).pipe(
-      tap(user => {
-        // El back devuelve Huesped con campo 'correo' (no 'email').
-        // Sincronizamos los dos para que cualquier componente que use 'email' funcione.
-        user.email = user.email || user.correo;
-        user.correo = user.correo || user.email;
+      tap(huesped => {
+        // El back devuelve la entidad Huesped con el correo dentro de user.username.
+        // Aplanamos a correo/email para que los componentes los puedan usar directo.
+        const correo = huesped.correo
+          || huesped.email
+          || huesped.user?.username
+          || '';
+        huesped.correo = correo;
+        huesped.email = correo;
       }),
       catchError(this.handleError)
     );

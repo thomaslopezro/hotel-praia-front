@@ -1,6 +1,12 @@
 <div class="login-page">
   <div class="login-overlay"></div>
 
+  <!-- Boton volver al inicio -->
+  <a routerLink="/"
+    style="position:absolute;top:20px;left:20px;z-index:10;color:#cbd5e1;text-decoration:none;display:inline-flex;align-items:center;gap:8px;font-size:14px;padding:8px 14px;border:1px solid rgba(203,213,225,0.3);border-radius:8px;background:rgba(15,23,42,0.6);backdrop-filter:blur(8px);">
+    ← Volver al inicio
+  </a>
+
   <div class="login-wrapper">
     <div class="brand-block">
       <p class="eyebrow">HOTEL PRAIA</p>
@@ -28,12 +34,20 @@
 
         <div class="form-group">
           <label for="contrasena">Contraseña</label>
-          <input
-            id="contrasena"
-            type="password"
-            formControlName="contrasena"
-            placeholder="Ingresa tu contraseña"
-          />
+          <div style="position:relative;">
+            <input
+              id="contrasena"
+              [type]="mostrarPassword ? 'text' : 'password'"
+              formControlName="contrasena"
+              placeholder="Ingresa tu contraseña"
+              style="width:100%;padding-right:80px;"
+            />
+            <button type="button"
+              (click)="mostrarPassword = !mostrarPassword"
+              style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:transparent;border:none;color:#b89a5e;cursor:pointer;font-size:12px;padding:6px 10px;">
+              {{ mostrarPassword ? 'Ocultar' : 'Ver' }}
+            </button>
+          </div>
         </div>
 
         <button type="submit" class="login-btn">Ingresar</button>

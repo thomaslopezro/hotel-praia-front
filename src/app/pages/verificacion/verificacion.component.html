@@ -1,0 +1,37 @@
+<div style="min-height:100vh;background:linear-gradient(180deg,#08121a,#023047);display:flex;align-items:center;justify-content:center;padding:24px;">
+  <div style="max-width:520px;width:100%;background:rgba(15,23,42,0.6);border:1px solid #1e293b;border-radius:18px;padding:48px 36px;text-align:center;">
+
+    <div style="margin-bottom:14px;">
+      <img src="assets/images/logoPraia.png" alt="Hotel Praia"
+        style="width:64px;height:64px;object-fit:contain;background:#fff;border-radius:14px;padding:6px;">
+    </div>
+    <p style="color:#b89a5e;letter-spacing:0.28em;font-size:11px;text-transform:uppercase;margin:0 0 8px;">HOTEL PRAIA</p>
+    <h1 style="font-family:Georgia,serif;color:#d6b36a;font-size:32px;margin:0 0 28px;">Verificación de cuenta</h1>
+
+    <!-- Cargando -->
+    <div *ngIf="estado === 'cargando'" style="color:#cbd5e1;">
+      <div class="spinner" style="margin:0 auto 16px;"></div>
+      <p>Validando tu cuenta...</p>
+    </div>
+
+    <!-- Exito -->
+    <div *ngIf="estado === 'ok'">
+      <div style="font-size:72px;margin-bottom:12px;">✅</div>
+      <p style="color:#a7f3d0;font-size:16px;margin:0 0 24px;line-height:1.6;">{{ mensaje }}</p>
+      <button (click)="irALogin()"
+        style="background:linear-gradient(135deg,#d6b36a,#b99243);color:#08121a;border:none;padding:14px 32px;border-radius:999px;font-weight:600;cursor:pointer;font-size:14px;letter-spacing:0.05em;">
+        Iniciar sesión
+      </button>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="estado === 'error'">
+      <div style="font-size:72px;margin-bottom:12px;">⚠️</div>
+      <p style="color:#fda4af;font-size:16px;margin:0 0 24px;line-height:1.6;">{{ mensaje }}</p>
+      <button (click)="irALogin()"
+        style="background:transparent;color:#cbd5e1;border:1px solid #334155;padding:14px 32px;border-radius:999px;font-weight:500;cursor:pointer;">
+        Volver al login
+      </button>
+    </div>
+  </div>
+</div>

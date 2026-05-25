@@ -11,6 +11,7 @@ import { AuthService, AuthResponse } from 'src/app/services/auth.service';
 export class LoginComponent {
   loginForm: FormGroup;
   error = '';
+  mostrarPassword = false;
 
   constructor(
     private fb: FormBuilder,

@@ -19,6 +19,10 @@ export class ServiciosService {
         subtitle: bs.descripcion,
         description: bs.descripcion,
         image: bs.imagenUrl,
+        precio: bs.precio,
+        precioTipo: bs.precioTipo,
+        horario: bs.horario,
+        capacidad: bs.capacidad,
         features: bs.horario ? [bs.horario] : [] // o convertir horario en array
       })))
     );
@@ -32,6 +36,10 @@ export class ServiciosService {
         subtitle: bs.descripcion,
         description: bs.descripcion,
         image: bs.imagenUrl,
+        precio: bs.precio,
+        precioTipo: bs.precioTipo,
+        horario: bs.horario,
+        capacidad: bs.capacidad,
         features: bs.horario ? [bs.horario] : []
       }))
     );
@@ -54,6 +62,10 @@ export class ServiciosService {
         subtitle: bs.descripcion,
         description: bs.descripcion,
         image: bs.imagenUrl,
+        precio: bs.precio,
+        precioTipo: bs.precioTipo,
+        horario: bs.horario,
+        capacidad: bs.capacidad,
         features: bs.horario ? [bs.horario] : []
       }))
     );
@@ -76,6 +88,10 @@ export class ServiciosService {
         subtitle: bs.descripcion,
         description: bs.descripcion,
         image: bs.imagenUrl,
+        precio: bs.precio,
+        precioTipo: bs.precioTipo,
+        horario: bs.horario,
+        capacidad: bs.capacidad,
         features: bs.horario ? [bs.horario] : []
       }))
     );

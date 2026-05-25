@@ -1,10 +1,14 @@
 <div class="bg-slate-950 text-slate-100 min-h-screen">
 
+  <!-- Cuando es operador, mostrar el header unificado primero -->
+  <ng-container *ngIf="esOperador()">
+    <app-operator-header></app-operator-header>
+    <app-operator-navbar></app-operator-navbar>
+  </ng-container>
+
+  <!-- Admin sigue con su propio navbar -->
   <ng-container *ngIf="!esOperador()">
     <app-admin-navbar></app-admin-navbar>
-  </ng-container>
-  <ng-container *ngIf="esOperador()">
-    <app-operator-navbar></app-operator-navbar>
   </ng-container>
 
   <header class="border-b border-slate-800 bg-slate-950/70">
@@ -136,6 +140,21 @@
               </td>
               <td class="px-5 py-3">
                 <div class="flex justify-end gap-2">
+                  <!--
+                    Para finalizar primero hay que abrir "Ver cuenta",
+                    cobrar lo pendiente y luego finalizar desde ahi.
+                    Asi forzamos el flujo correcto.
+                  -->
+                  <button (click)="abrirFactura(r.id)"
+                    *ngIf="r.estado === 'CONFIRMADA' || r.estado === 'PENDIENTE'"
+                    class="rounded-lg border border-emerald-800 px-3 py-2 text-xs hover:bg-emerald-900/50 hover:border-emerald-600 transition flex items-center gap-1">
+                    💳 Ver cuenta / Finalizar
+                  </button>
+                  <button (click)="abrirFactura(r.id)"
+                    *ngIf="r.estado !== 'CONFIRMADA' && r.estado !== 'PENDIENTE'"
+                    class="rounded-lg border border-sky-800 px-3 py-2 text-xs hover:bg-sky-900/50 hover:border-sky-600 transition">
+                    Ver cuenta
+                  </button>
                   <button (click)="goToEdit(r.id)"
                     class="rounded-lg border border-slate-800 px-3 py-2 text-xs hover:bg-slate-900">
                     Editar
@@ -143,14 +162,6 @@
                   <button (click)="eliminarReserva(r.id)"
                     class="rounded-lg border border-slate-800 px-3 py-2 text-xs hover:bg-slate-900 hover:border-red-800 hover:text-red-400 transition">
                     Eliminar
-                  </button>
-                  <!-- Botón Finalizar - solo para reservas CONFIRMADA o PENDIENTE -->
-                  <button 
-                    *ngIf="r.estado === 'CONFIRMADA' || r.estado === 'PENDIENTE'"
-                    (click)="finalizarReserva(r)"
-                    [disabled]="finalizandoId === r.id"
-                    class="rounded-lg border border-emerald-800 px-3 py-2 text-xs hover:bg-emerald-900/50 hover:border-emerald-600 transition disabled:opacity-50">
-                    {{ finalizandoId === r.id ? '...' : 'Finalizar' }}
                   </button>
                 </div>
               </td>
@@ -166,4 +177,163 @@
     </section>
 
   </main>
+
+  <!-- ============================================ -->
+  <!-- MODAL FACTURA / CUENTA -->
+  <!-- ============================================ -->
+  <div *ngIf="cargandoFactura || facturaAbierta"
+    style="position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;padding:20px;"
+    (click)="cerrarFactura()">
+
+    <div (click)="$event.stopPropagation()"
+      style="background:#0f172a;border:1px solid #334155;border-radius:14px;max-width:600px;width:100%;max-height:90vh;overflow:auto;padding:24px;">
+
+      <!-- Header -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid #1e293b;padding-bottom:16px;">
+        <div>
+          <h2 style="margin:0;color:#fff;font-size:20px;">Cuenta del huésped</h2>
+          <p *ngIf="facturaAbierta" style="margin:4px 0 0;color:#94a3b8;font-size:13px;">
+            Reserva #{{ facturaAbierta.reservaId }} · Habitación {{ facturaAbierta.habitacionCodigo }}
+          </p>
+        </div>
+        <button (click)="cerrarFactura()"
+          style="background:transparent;border:none;color:#94a3b8;cursor:pointer;font-size:22px;padding:0 8px;">×</button>
+      </div>
+
+      <!-- Cargando -->
+      <div *ngIf="cargandoFactura" style="text-align:center;padding:40px;color:#94a3b8;">
+        Cargando factura...
+      </div>
+
+      <!-- Factura -->
+      <div *ngIf="facturaAbierta && !cargandoFactura">
+        <!-- Datos huesped/reserva -->
+        <div style="background:#1e293b;border-radius:8px;padding:14px;margin-bottom:16px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+            <span style="color:#94a3b8;">Huésped:</span>
+            <strong style="color:#fff;">{{ facturaAbierta.huespedNombre }}</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+            <span style="color:#94a3b8;">Check-in:</span>
+            <span>{{ facturaAbierta.fechaInicio }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+            <span style="color:#94a3b8;">Check-out:</span>
+            <span>{{ facturaAbierta.fechaFin }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;">
+            <span style="color:#94a3b8;">Estado:</span>
+            <strong [style.color]="facturaAbierta.estadoReserva === 'FINALIZADA' ? '#10b981' : '#fbbf24'">
+              {{ facturaAbierta.estadoReserva }}
+            </strong>
+          </div>
+        </div>
+
+        <!-- Habitacion -->
+        <div style="margin-bottom:16px;">
+          <h3 style="color:#fff;font-size:14px;margin:0 0 10px;text-transform:uppercase;letter-spacing:0.05em;">Habitación</h3>
+          <div style="background:#1e293b;border-radius:8px;padding:14px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;color:#cbd5e1;">
+              <span>{{ facturaAbierta.noches }} noche(s) × ${{ facturaAbierta.precioNoche | number:'1.0-0' }}</span>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <strong [style.color]="facturaAbierta.habitacionPagada ? '#64748b' : '#fff'"
+                  [style.text-decoration]="facturaAbierta.habitacionPagada ? 'line-through' : 'none'">
+                  ${{ facturaAbierta.subtotalHabitacion | number:'1.0-0' }}
+                </strong>
+                <span *ngIf="facturaAbierta.habitacionPagada"
+                  style="background:rgba(16,185,129,0.18);color:#a7f3d0;border:1px solid rgba(16,185,129,0.4);padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:0.05em;">
+                  ✅ PAGADO
+                </span>
+              </div>
+            </div>
+            <p *ngIf="facturaAbierta.habitacionPagada"
+              style="margin:8px 0 0;color:#64748b;font-size:12px;">
+              El huésped pagó la habitación al reservar online.
+            </p>
+          </div>
+        </div>
+
+        <!-- Servicios -->
+        <div style="margin-bottom:16px;">
+          <h3 style="color:#fff;font-size:14px;margin:0 0 10px;text-transform:uppercase;letter-spacing:0.05em;">Servicios consumidos</h3>
+          <div *ngIf="facturaAbierta.itemsServicios?.length === 0"
+            style="background:#1e293b;border-radius:8px;padding:14px;color:#94a3b8;text-align:center;font-size:13px;">
+            Sin servicios consumidos
+          </div>
+          <div *ngIf="facturaAbierta.itemsServicios?.length > 0"
+            style="background:#1e293b;border-radius:8px;padding:14px;">
+            <div *ngFor="let item of facturaAbierta.itemsServicios"
+              style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #334155;color:#cbd5e1;font-size:14px;">
+              <span>{{ item.servicioNombre }} × {{ item.cantidad }}</span>
+              <span>${{ item.subtotal | number:'1.0-0' }}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding-top:8px;margin-top:6px;border-top:1px solid #475569;">
+              <strong style="color:#cbd5e1;">Subtotal servicios</strong>
+              <strong style="color:#fff;">${{ facturaAbierta.subtotalServicios | number:'1.0-0' }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total a cobrar (solo lo pendiente: servicios + habitacion si no esta pagada) -->
+        <div style="background:linear-gradient(135deg, rgba(251,191,36,0.15), rgba(184,154,94,0.10));border:1px solid rgba(251,191,36,0.4);border-radius:10px;padding:16px;margin-bottom:20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="color:#fbbf24;font-size:13px;text-transform:uppercase;letter-spacing:0.08em;">Total a cobrar</span>
+            <strong style="color:#fbbf24;font-size:26px;">${{ (facturaAbierta.deudaPendiente ?? facturaAbierta.totalGeneral) | number:'1.0-0' }}</strong>
+          </div>
+          <p *ngIf="facturaAbierta.habitacionPagada && facturaAbierta.subtotalServicios === 0"
+            style="margin:6px 0 0;color:#a7f3d0;font-size:12px;">
+            ✓ Sin deuda pendiente. Ya puedes finalizar la reserva.
+          </p>
+          <p *ngIf="facturaAbierta.habitacionPagada && facturaAbierta.subtotalServicios > 0"
+            style="margin:6px 0 0;color:#fbbf24;font-size:12px;">
+            Solo se cobran los servicios consumidos (la habitación ya está pagada).
+          </p>
+        </div>
+
+        <!-- Aviso si tiene deuda de servicios -->
+        <div *ngIf="facturaAbierta.subtotalServicios > 0 && facturaAbierta.estadoReserva !== 'FINALIZADA'"
+          style="background:rgba(244,63,94,0.10);border:1px solid rgba(244,63,94,0.35);border-radius:8px;padding:12px;margin-bottom:16px;color:#fda4af;font-size:13px;">
+          ⚠️ El huésped tiene servicios por pagar (${{ facturaAbierta.subtotalServicios | number:'1.0-0' }}).
+          Cobra los servicios antes de finalizar la reserva.
+        </div>
+
+        <!-- Mensaje de pago confirmado -->
+        <div *ngIf="pagoExitoso"
+          style="background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.45);border-radius:8px;padding:12px;margin-bottom:16px;color:#a7f3d0;font-size:13px;text-align:center;">
+          ✅ Pago confirmado. Ya puedes finalizar la reserva.
+        </div>
+
+        <!-- ACCIONES -->
+        <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;">
+
+          <!-- Cerrar -->
+          <button (click)="cerrarFactura()"
+            style="background:transparent;color:#cbd5e1;border:1px solid #334155;padding:10px 18px;border-radius:8px;cursor:pointer;">
+            Cerrar
+          </button>
+
+          <!-- Boton COBRAR (solo si hay deuda y la reserva NO esta finalizada) -->
+          <button
+            *ngIf="facturaAbierta.subtotalServicios > 0 && facturaAbierta.estadoReserva !== 'FINALIZADA' && facturaAbierta.estadoReserva !== 'CANCELADA'"
+            (click)="cobrarCuenta()"
+            [disabled]="cobrando"
+            style="background:linear-gradient(135deg,#fbbf24,#d97706);color:#0f172a;border:none;padding:10px 22px;border-radius:8px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:6px;">
+            <span>💳</span>
+            {{ cobrando ? 'Redirigiendo a Stripe...' : 'Cobrar con Stripe' }}
+          </button>
+
+          <!-- Boton FINALIZAR (solo si NO hay deuda y la reserva esta CONFIRMADA o PENDIENTE) -->
+          <button
+            *ngIf="facturaAbierta.subtotalServicios === 0 && (facturaAbierta.estadoReserva === 'CONFIRMADA' || facturaAbierta.estadoReserva === 'PENDIENTE')"
+            (click)="finalizarDesdeModal()"
+            [disabled]="finalizandoId === facturaAbierta.reservaId"
+            style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;padding:10px 22px;border-radius:8px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:6px;">
+            <span>✓</span>
+            {{ finalizandoId === facturaAbierta.reservaId ? 'Finalizando...' : 'Finalizar reserva' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>

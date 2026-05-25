@@ -14,6 +14,7 @@ export class RegistroComponent {
 
   mensaje = '';
   error = '';
+  mostrarPassword = false;
 
   constructor(
     private fb: FormBuilder,
@@ -93,19 +94,22 @@ export class RegistroComponent {
     // =========================
     this.authService.registrar(huesped as any).subscribe({
 
-      next: () => {
+      next: (resp: any) => {
 
         this.error = '';
 
-        this.mensaje = 'Usuario registrado correctamente';
+        // El back devuelve un mensaje con "Revisa tu correo..." si verificacion esta activa
+        this.mensaje = resp?.ok ||
+          'Registro exitoso. Revisa tu correo para verificar tu cuenta antes de iniciar sesión.';
 
         console.log('Registro exitoso');
 
+        // Dejamos 4s para que lea el mensaje antes de mandarlo al login
         setTimeout(() => {
 
           this.router.navigate(['/login']);
 
-        }, 1000);
+        }, 4000);
       },
 
       error: (err) => {

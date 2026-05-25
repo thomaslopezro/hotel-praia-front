@@ -1,6 +1,18 @@
 <div class="reservar-page" *ngIf="tipoHabitacion">
   <div class="reservar-container">
 
+    <!-- Barra superior de navegacion (siempre visible) -->
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 0;margin-bottom:8px;">
+      <a routerLink="/"
+        style="color:#cbd5e1;text-decoration:none;display:inline-flex;align-items:center;gap:8px;font-size:14px;padding:8px 14px;border:1px solid #334155;border-radius:8px;background:rgba(15,23,42,0.5);">
+        ← Volver al inicio
+      </a>
+      <a routerLink="/mi-perfil"
+        style="color:#cbd5e1;text-decoration:none;display:inline-flex;align-items:center;gap:8px;font-size:14px;padding:8px 14px;border:1px solid #334155;border-radius:8px;background:rgba(15,23,42,0.5);">
+        Mi perfil →
+      </a>
+    </div>
+
     <div class="reservar-hero">
       <div class="reservar-media">
         <img
@@ -46,22 +58,28 @@
           </div>
         </div>
 
-        <div class="reservar-servicios" *ngIf="(tipoHabitacion.amenities || '').length">
+        <div class="reservar-servicios" *ngIf="tipoHabitacion.amenities && tipoHabitacion.amenities.length">
           <h3>Servicios incluidos</h3>
           <ul>
-            <li *ngFor="let amenity of (tipoHabitacion.amenities || '').split(',')">
-              {{ amenity.trim() }}
+            <!-- amenities ya viene como array desde el service (no aplica .split) -->
+            <li *ngFor="let amenity of tipoHabitacion.amenities">
+              {{ amenity }}
             </li>
           </ul>
         </div>
       </div>
     </div>
 
-    <div class="reserva-form-card">
+    <!-- FORM DE RESERVA: visible mientras no haya confirmacion -->
+    <div class="reserva-form-card" *ngIf="!reservaConfirmada">
       <div class="form-header">
         <p class="form-kicker">RESERVA</p>
         <h2>Completa tu estadía</h2>
         <p>Selecciona las fechas y la cantidad de personas para consultar disponibilidad.</p>
+      </div>
+
+      <div *ngIf="error" style="background:#7f1d1d;color:#fecaca;padding:12px;border-radius:8px;margin-bottom:16px;">
+        {{ error }}
       </div>
 
       <div class="form-grid">
@@ -81,9 +99,63 @@
         </div>
       </div>
 
-      <button class="btn-confirmar" (click)="reservar()">
-        Confirmar reserva
+      <button class="btn-confirmar" (click)="reservar()" [disabled]="guardando">
+        {{ guardando ? 'Redirigiendo a la pasarela...' : '💳 Pagar y reservar' }}
       </button>
+      <p style="text-align:center;margin-top:8px;font-size:12px;color:#94a3b8;">
+        Pago seguro con Stripe. La reserva se crea solo si el pago es exitoso.
+      </p>
+    </div>
+
+    <!-- CONFIRMACION DE RESERVA: visible despues de crear con exito -->
+    <div class="reserva-form-card" *ngIf="reservaConfirmada"
+      style="text-align:center;padding:40px 24px;">
+
+      <div style="font-size:64px;margin-bottom:16px;">✓</div>
+
+      <h2 style="color:#10b981;margin-bottom:8px;">¡Reserva confirmada!</h2>
+
+      <p style="color:#94a3b8;margin-bottom:32px;">
+        Te enviaremos los detalles a tu correo.
+      </p>
+
+      <div style="background:rgba(15,23,42,0.6);border:1px solid #1e293b;border-radius:12px;padding:20px;margin-bottom:24px;text-align:left;">
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1e293b;">
+          <span style="color:#94a3b8;">Habitación asignada</span>
+          <strong style="color:#fbbf24;">{{ reservaConfirmada.habitacionCodigo }}</strong>
+        </div>
+        <div *ngIf="reservaConfirmada.reservaId" style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1e293b;">
+          <span style="color:#94a3b8;">Número de reserva</span>
+          <strong>#{{ reservaConfirmada.reservaId }}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1e293b;">
+          <span style="color:#94a3b8;">Tipo</span>
+          <strong>{{ tipoHabitacion.name || tipoHabitacion.nombre }}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1e293b;">
+          <span style="color:#94a3b8;">Check-in</span>
+          <strong>{{ reservaConfirmada.fechaInicio }}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1e293b;">
+          <span style="color:#94a3b8;">Check-out</span>
+          <strong>{{ reservaConfirmada.fechaFin }}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;">
+          <span style="color:#94a3b8;">Personas</span>
+          <strong>{{ reservaConfirmada.personas }}</strong>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button (click)="irAMisReservas()"
+          style="background:#0ea5e9;color:white;border:none;padding:12px 24px;border-radius:8px;cursor:pointer;font-weight:500;">
+          Ver mis reservas
+        </button>
+        <button (click)="volverAlInicio()"
+          style="background:transparent;color:#cbd5e1;border:1px solid #334155;padding:12px 24px;border-radius:8px;cursor:pointer;">
+          Volver al inicio
+        </button>
+      </div>
     </div>
 
   </div>

@@ -1,17 +1,7 @@
 <div class="bg-slate-950 text-slate-100 min-h-screen">
-  
-  <!-- HEADER consistente con tus otras pantallas -->
-  <header class="border-b border-slate-800 bg-slate-950/70 backdrop-blur sticky top-0 z-50">
-    <div class="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <img src="assets/images/logoPraia.png" alt="Hotel Praia" class="w-11 h-11 rounded-xl bg-white p-1 object-contain" />
-        <span class="text-lg font-semibold tracking-tight">Praia · Servicios a cuenta</span>
-      </div>
-      <button (click)="volver()" class="rounded-lg border border-slate-800 px-4 py-2 text-sm hover:bg-slate-900 transition">
-        ← Volver al panel
-      </button>
-    </div>
-  </header>
+
+  <!-- Header unificado del operador -->
+  <app-operator-header></app-operator-header>
 
   <app-operator-navbar></app-operator-navbar>
 
@@ -164,19 +154,10 @@
         </table>
       </div>
 
-      <div class="mt-6 flex justify-between items-center">
-        <div class="text-xs text-slate-400">
-          * Los servicios se agregarán a la cuenta del huésped
-        </div>
-        <button 
-          (click)="pagarTodo()"
-          [disabled]="itemsCuenta.length === 0 || pagando"
-          class="rounded-xl bg-emerald-600 px-6 py-2.5 text-sm font-medium hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          {{ pagando ? 'Procesando...' : 'Pagar todo' }}
-        </button>
+      <div class="mt-6 text-xs text-slate-400">
+        * Los servicios se agregarán a la cuenta del huésped.
+        El cobro y check-out se realizan desde
+        <strong class="text-sky-300">Reservas → Ver cuenta / Finalizar</strong>.
       </div>
     </div>
 

@@ -1,5 +1,18 @@
 <div class="perfil-page">
   <div class="perfil-wrapper">
+
+    <!-- BARRA DE NAVEGACION SUPERIOR -->
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 0;margin-bottom:8px;">
+      <a routerLink="/"
+        style="color:#cbd5e1;text-decoration:none;display:inline-flex;align-items:center;gap:8px;font-size:14px;padding:8px 14px;border:1px solid #334155;border-radius:8px;background:rgba(15,23,42,0.5);">
+        ← Volver al inicio
+      </a>
+      <button (click)="cerrarSesion()"
+        style="color:#fda4af;background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.4);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:14px;">
+        Cerrar sesión
+      </button>
+    </div>
+
     <!-- HEADER -->
     <div class="perfil-header">
       <p class="eyebrow">HOTEL PRAIA</p>
@@ -96,11 +109,15 @@
 
             <p>
               <strong>Habitación:</strong>
-              {{ reserva.habitacion?.codigo || "No disponible" }}
+              <!-- El back devuelve habitacionCodigo (plano) en el DTO. Fallback al objeto anidado por compatibilidad -->
+              {{ $any(reserva).habitacionCodigo || reserva.habitacion?.codigo || "No disponible" }}
             </p>
           </div>
 
-          <button class="secondary-btn" (click)="cancelarReserva(reserva.id)">
+          <!-- Solo se puede cancelar si esta PENDIENTE o CONFIRMADA -->
+          <button class="secondary-btn"
+            *ngIf="reserva.estado === 'PENDIENTE' || reserva.estado === 'CONFIRMADA'"
+            (click)="cancelarReserva(reserva.id)">
             Cancelar reserva
           </button>
         </div>

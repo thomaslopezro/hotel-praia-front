@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { Reserva } from '../../modelo/reserva';
 import { ReservaService } from '../../services/reserva.service';
 import { AuthService } from '../../services/auth.service';
+import { CuentaService } from '../../services/cuenta.service';
+import { PagoService } from '../../services/pago.service';
 
 @Component({
   selector: 'app-reservas-admin',
@@ -19,6 +21,8 @@ export class ReservasAdminComponent implements OnInit {
 
   constructor(
     private reservaService: ReservaService,
+    private cuentaService: CuentaService,
+    private pagoService: PagoService,
     private router: Router,
     public authService: AuthService
   ) {}
@@ -102,6 +106,86 @@ export class ReservasAdminComponent implements OnInit {
   }
 
 finalizandoId: number | null = null;
+
+  // Modal de factura
+  facturaAbierta: any = null;
+  cargandoFactura = false;
+
+  abrirFactura(reservaId?: number): void {
+    if (!reservaId) return;
+    this.cargandoFactura = true;
+    this.facturaAbierta = null;
+    this.reservaService.getFactura(reservaId).subscribe({
+      next: (factura) => {
+        this.facturaAbierta = factura;
+        this.cargandoFactura = false;
+      },
+      error: (err) => {
+        this.cargandoFactura = false;
+        this.errMessage = err.error?.err || 'No se pudo cargar la factura';
+        setTimeout(() => this.errMessage = '', 4000);
+      }
+    });
+  }
+
+  cerrarFactura(): void {
+    this.facturaAbierta = null;
+    this.cobrando = false;
+    this.pagoExitoso = false;
+  }
+
+  // Estados del modal
+  cobrando = false;       // mientras llama al endpoint /pagar
+  pagoExitoso = false;    // muestra "Pago confirmado" tras cobrar
+
+  // Cobrar los servicios de la cuenta a traves de Stripe.
+  // El operador hace click -> arranca un Checkout de Stripe -> al confirmar,
+  // el endpoint /pago-exitoso llama al back que finalmente vacia la cuenta.
+  cobrarCuenta(): void {
+    if (!this.facturaAbierta?.cuentaId) {
+      this.errMessage = 'No se puede cobrar: la reserva no tiene cuenta asociada.';
+      return;
+    }
+    if (!confirm(`¿Iniciar cobro de $${(this.facturaAbierta.subtotalServicios || 0).toLocaleString()} con Stripe?`)) {
+      return;
+    }
+
+    this.cobrando = true;
+    this.pagoService.iniciarPagoServicios(this.facturaAbierta.cuentaId).subscribe({
+      next: (resp) => {
+        // Redirige al operador a la pagina de pago de Stripe.
+        // Tras pagar, Stripe lo lleva a /pago-exitoso que confirma con el back.
+        window.location.href = resp.url;
+      },
+      error: (err) => {
+        this.cobrando = false;
+        this.errMessage = err?.error?.err || 'No se pudo iniciar el pago';
+        setTimeout(() => this.errMessage = '', 4000);
+      }
+    });
+  }
+
+  // Finalizar desde el modal (cuando ya se pago todo)
+  finalizarDesdeModal(): void {
+    if (!this.facturaAbierta?.reservaId) return;
+    if (!confirm('¿Finalizar la reserva ahora? El huésped hará check-out.')) return;
+
+    this.finalizandoId = this.facturaAbierta.reservaId;
+    this.reservaService.finalizarReserva(this.facturaAbierta.reservaId).subscribe({
+      next: () => {
+        this.finalizandoId = null;
+        this.okMessage = `✅ Reserva #${this.facturaAbierta.reservaId} finalizada correctamente`;
+        this.cerrarFactura();
+        this.cargarReservas();
+        setTimeout(() => this.okMessage = '', 4000);
+      },
+      error: (err) => {
+        this.finalizandoId = null;
+        this.errMessage = err.error?.err || 'No se pudo finalizar la reserva';
+        setTimeout(() => this.errMessage = '', 6000);
+      }
+    });
+  }
 
 finalizarReserva(reserva: Reserva): void {
     if (!reserva.id) return;

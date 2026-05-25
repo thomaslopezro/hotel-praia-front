@@ -197,13 +197,22 @@ export class MiPerfilComponent implements OnInit {
       return;
     }
 
+    if (!confirm('¿Seguro que deseas cancelar esta reserva?')) {
+      return;
+    }
+
     this.reservaService.cancelarReserva(id).subscribe({
 
       next: () => {
 
-        this.reservas = this.reservas.filter(r => r.id !== id);
+        // La reserva NO se elimina, solo cambia a CANCELADA.
+        // Actualizo su estado en la lista local en vez de removerla.
+        this.reservas = this.reservas.map(r =>
+          r.id === id ? { ...r, estado: 'CANCELADA' } : r
+        );
         this.mensaje = 'Reserva cancelada correctamente.';
         this.error = '';
+        setTimeout(() => this.mensaje = '', 3000);
       },
 
       error: (err) => {
@@ -217,6 +226,11 @@ export class MiPerfilComponent implements OnInit {
         this.error = 'No fue posible cancelar la reserva.';
       }
     });
+  }
+
+  cerrarSesion(): void {
+    this.authService.logout();
+    this.router.navigate(['/']);
   }
 
   eliminarCuenta(): void {
